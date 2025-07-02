@@ -13,6 +13,9 @@ namespace Övning_7_MovieAPI.Data
             Console.WriteLine("SeedData: Starting...");
             if (await context.Movies.AnyAsync())
             {
+                //await context.Database.EnsureDeletedAsync();
+                //await context.Database.EnsureCreatedAsync();
+           
                 Console.WriteLine("SeedData: Skip.");
                 return;
             }
@@ -28,14 +31,15 @@ namespace Övning_7_MovieAPI.Data
         {
             var movies = new List<Movie>();
 
+            var genreCheck = new Dictionary<string, Genre>(StringComparer.OrdinalIgnoreCase);
+            var actorCheck = new Dictionary<string, Actor>(StringComparer.OrdinalIgnoreCase);
+
             using var reader = new StreamReader("Data/raw/raw.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
             var records = csv.GetRecords<CsvRecord>();
 
             foreach (var record in records)
             {
-                //string[] actors = record.Actors.Trim().Split(',', StringSplitOptions.RemoveEmptyEntries);
-
                 var movie = new Movie()
                 {
                     Title = record.Title.Trim(),
@@ -51,20 +55,22 @@ namespace Övning_7_MovieAPI.Data
 
                 foreach (var mg in record.Genre.Split(',', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    var genre = new Genre
-                    {
-                        MovieGenre = mg.Trim(),
-                    };
+                    if (!genreCheck.TryGetValue(mg.Trim(), out var genre))
+                        {
+                            genre = new Genre{MovieGenre = mg.Trim()};
+                            genreCheck[mg.Trim()] = genre;
+                        }
                     movie.Genres.Add(genre);
                 }
 
                 foreach (var a in record.Actors.Split(',', StringSplitOptions.RemoveEmptyEntries))
                 {
-                    var actor = new Actor
+
+                    if (!actorCheck.TryGetValue(a.Trim(), out var actor))
                     {
-                        Name = a.Trim(),
-                        BirthYear = new DateTime(1970, 1, 1) // placeholder
-                    };
+                        actor = new Actor { Name = a.Trim(), BirthYear = "1970" };
+                        actorCheck[a.Trim()] = actor;
+                    }
                     movie.Actors.Add(actor);
                 }
                 movies.Add(movie);

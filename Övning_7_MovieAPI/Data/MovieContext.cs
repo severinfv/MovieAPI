@@ -16,6 +16,8 @@ namespace Övning_7_MovieAPI.Data
         }
 
         public DbSet<Movie> Movies { get; set; } = default!;
+        public DbSet<Actor> Actor { get; set; } = default!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

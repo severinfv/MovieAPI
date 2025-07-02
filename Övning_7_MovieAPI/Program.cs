@@ -32,7 +32,6 @@ namespace Övning_7_MovieAPI
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
