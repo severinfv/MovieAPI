@@ -6,12 +6,13 @@ namespace Övning_7_MovieAPI.Models.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; } = null!;
-        public DateTime Year { get; set; } 
-        public int Duration { get; set; }
+        public string Year { get; set; } = null!;
+        public int Runtime { get; set; }
+        public double Rating { get; set; }
 
         public MovieDetails? MovieDetails { get; set;} = null!;
-        public ICollection<Review> Reviews { get; } = new List<Review>();
-        public ICollection<Actor> Actors { get; } = new List<Actor>();
-        public ICollection<Genre> Genres { get; } = new List<Genre>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<Actor> Actors { get; set; } = new List<Actor>();
+        public ICollection<Genre> Genres { get; set; } = new List<Genre>();
     }
 }
