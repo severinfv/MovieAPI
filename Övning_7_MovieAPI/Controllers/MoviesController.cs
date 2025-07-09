@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Övning_7_MovieAPI.Data;
-using Övning_7_MovieAPI.Models.Entities;
 using Övning_7_MovieAPI.Models.DTOs;
+using Övning_7_MovieAPI.Models.Entities;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Text.Json;
 
 namespace Övning_7_MovieAPI.Controllers
 {
-    [Route("api/Movies")]
+    [Route("api/movies")]
     [ApiController]
     public class MoviesController : ControllerBase
     {
@@ -24,16 +20,19 @@ namespace Övning_7_MovieAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Movies
+        // GET: api/movies
         [HttpGet]
+        [SwaggerOperation(Summary = "Gets all movies", Description = "Gets a short info of all movies (with pagination)")]
+        // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<MovieDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<(IEnumerable<MovieDto>, PaginationMetadata)>> GetMovie(int pageNumber = 1, int pageSize = 5)
         {
             if (pageSize > maxMoviesPageSize)
             {
                 pageSize = maxMoviesPageSize;
             }
-            var movies = await _context.Movies.Select(m => new MovieDto(m.Id, m.Title,  m.Year, m.Runtime, m.Rating)).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
-            
+            var movies = await _context.Movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+
             var totalItemCount = await _context.Movies.CountAsync();
             var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
 
@@ -42,42 +41,45 @@ namespace Övning_7_MovieAPI.Controllers
         }
 
         // GET: api/Movies/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
+        [SwaggerOperation(Summary = "Gets movie by id", Description = "Gets a short info of a movie by Id.")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
-            var movie = await _context.Movies.Where(m => m.Id == id).Select(m => new MovieDto(m.Id, m.Title, m.Year, m.Runtime, m.Rating)).FirstOrDefaultAsync();
-            
+            var movie = await _context.Movies.Where(m => m.Id == id).Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).FirstOrDefaultAsync();
+
 
             if (movie == null)
-            {
                 return NotFound();
-            }
 
             return Ok(movie);
         }
 
-        // GET: api/Movies/5
+
+        // GET: api/Movies/5/details
         [HttpGet("{id}/details")]
+        [SwaggerOperation(Summary = "Gets movie with details by id", Description = "Gets a detailed info of a movie by Id.")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MovieDetailsDto>> GetMovieWithDetails(int id)
         {
-            var movie = await _context.Movies.Where(m => m.Id == id).Select(m => new MovieDetailsDto 
-            { 
-                Id = m.Id, 
-                Title = m.Title, 
-                Year = m.Year, 
-                Runtime = m.Runtime, 
-                Rating = m.Rating,
+            var movie = await _context.Movies.Where(m => m.Id == id).Select(m => new MovieDetailsDto
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Year = m.Year.Year,
+                DirectorName = m.Director.Name,
+                Runtime = m.Runtime,
+                IMDBRating = m.IMDBRating,
                 Genres = m.Genres.Select(g => new GenreDto(g.MovieGenre)),
-                Actors = m.Actors.Select(a => new ActorDto(a.Name, a.BirthYear)),
+                Actors = m.Actors.Select(a => new ActorDto(a.Name)),
                 Reviews = m.Reviews.Select(r => new ReviewDto(r.ReviewerName, r.Comment, r.Rating)),
             })
             .FirstOrDefaultAsync();
 
-
             if (movie == null)
-            {
                 return NotFound();
-            }
 
             return Ok(movie);
         }
@@ -85,6 +87,10 @@ namespace Övning_7_MovieAPI.Controllers
         // PUT: api/Movies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Update Movie", Description = "Updates an existing movie by ID.")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> PutMovie(int id, MovieUpdateDto dto)
         {
             var movie = await _context.Movies.FirstOrDefaultAsync(s => s.Id == id);
@@ -92,9 +98,9 @@ namespace Övning_7_MovieAPI.Controllers
             if (movie is null) return NotFound();
 
             movie.Title = dto.Title;
-            movie.Year = dto.Year;  
-            movie.Runtime = dto.Runtime;    
-            movie.Rating = dto.Rating;
+            movie.Year = dto.Year;
+            movie.Runtime = dto.Runtime;
+            movie.IMDBRating = dto.IMDBRating;
 
             try
             {
@@ -118,6 +124,9 @@ namespace Övning_7_MovieAPI.Controllers
         // POST: api/Movies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [SwaggerOperation(Summary = "Create a movie.", Description = "Creates a new movie.")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MovieDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Movie>> PostMovie(MovieCreateDto dto)
         {
             var movie = new Movie
@@ -125,18 +134,21 @@ namespace Övning_7_MovieAPI.Controllers
                 Title = dto.Title,
                 Year = dto.Year,
                 Runtime = dto.Runtime,
-                Rating = dto.Rating,
+                IMDBRating = dto.IMDBRating,
             };
 
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
-            var movieDto = new MovieDto(movie.Id, movie.Title, movie.Year, movie.Runtime, movie.Rating);
+            var movieDto = new MovieDto { Id = movie.Id, Title = movie.Title, Year = movie.Year.Year, Runtime = movie.Runtime, IMDBRating = movie.IMDBRating };
             return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movieDto);
         }
 
         // DELETE: api/Movies/5
         [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Delete a movie", Description = "Deletes a movie by ID.")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
             var movie = await _context.Movies.FindAsync(id);

@@ -15,11 +15,11 @@ namespace Övning_7_MovieAPI.Data
             {
                 //await context.Database.EnsureDeletedAsync();
                 //await context.Database.EnsureCreatedAsync();
-           
+                //await InitAsync(context);
                 Console.WriteLine("SeedData: Skip.");
                 return;
             }
-            
+
             var movies = GenerateMovies();
             await context.AddRangeAsync(movies);
             Console.WriteLine($"SeedData: {movies.Count()} movies to insert.");
@@ -31,8 +31,10 @@ namespace Övning_7_MovieAPI.Data
         {
             var movies = new List<Movie>();
 
+            //to avoid duplicates
             var genreCheck = new Dictionary<string, Genre>(StringComparer.OrdinalIgnoreCase);
             var actorCheck = new Dictionary<string, Actor>(StringComparer.OrdinalIgnoreCase);
+            var directorCheck = new Dictionary<string, Director>(StringComparer.OrdinalIgnoreCase);
 
             using var reader = new StreamReader("Data/raw/raw.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
@@ -40,19 +42,32 @@ namespace Övning_7_MovieAPI.Data
 
             foreach (var record in records)
             {
+                var directorName = record.Director.Trim();
+                if (!directorCheck.TryGetValue(directorName, out var director))
+                {
+                    director = new Director { Name = directorName };
+                    directorCheck[directorName] = director;
+                }
+
+                double? revenue = null;
+                if (double.TryParse(record.Revenue, out var parsedRevenue))
+                    revenue = parsedRevenue;
+
                 var movie = new Movie()
                 {
                     Title = record.Title.Trim(),
-                    Year = record.Year,
+                    Year = new DateOnly(Int32.Parse(record.Year), 12, 31),
                     Runtime = record.Runtime,
                     MovieDetails = new MovieDetails()
                     {
                         Synopsis = record.Description.Trim(),
-                        Language = "English"
+                        Revenue = revenue
                     },
-                    Rating = record.Rating,
+                    IMDBRating = record.Rating,
+                    Director = director,
                 };
 
+                
                 foreach (var mg in record.Genre.Split(',', StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (!genreCheck.TryGetValue(mg.Trim(), out var genre))
@@ -68,7 +83,7 @@ namespace Övning_7_MovieAPI.Data
 
                     if (!actorCheck.TryGetValue(a.Trim(), out var actor))
                     {
-                        actor = new Actor { Name = a.Trim(), BirthYear = "1970" };
+                        actor = new Actor { Name = a.Trim()};
                         actorCheck[a.Trim()] = actor;
                     }
                     movie.Actors.Add(actor);

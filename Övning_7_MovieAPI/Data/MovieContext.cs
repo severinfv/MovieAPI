@@ -1,45 +1,30 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Övning_7_MovieAPI.Data.Configurations;
 using Övning_7_MovieAPI.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Övning_7_MovieAPI.Data
 {
     public class MovieContext : DbContext
     {
-        public MovieContext (DbContextOptions<MovieContext> options)
+        public MovieContext(DbContextOptions<MovieContext> options)
             : base(options)
         {
         }
 
         public DbSet<Movie> Movies { get; set; } = default!;
-        public DbSet<Actor> Actor { get; set; } = default!;
+        public DbSet<Genre> Genres { get; set; } = default!;
+        public DbSet<Actor> Actors { get; set; } = default!;
+        public DbSet<Review> Reviews { get; set; } = default!;
+        public DbSet<Director> Directors { get; set; } = default!;
+        public DbSet<MovieActor> Roles { get; set; } = default!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Movie>()
-                        .HasOne(s => s.MovieDetails)
-                        .WithOne(a => a.Movie)
-                        .HasForeignKey<MovieDetails>(a => a.MovieId);
-
-            modelBuilder.Entity<MovieDetails>()
-            .HasIndex(a => a.MovieId)
-            .IsUnique();
-
-            modelBuilder.Entity<Movie>()
-            .HasMany(m => m.Actors)
-            .WithMany(a => a.Movies);
-
-            modelBuilder.Entity<Movie>()
-            .HasMany(m => m.Genres)
-            .WithMany(g => g.Movies);
-
+            modelBuilder.ApplyConfiguration(new MovieConfiguration());
+            modelBuilder.ApplyConfiguration(new MovieDetailsConfiguration());
+            modelBuilder.ApplyConfiguration(new ActorConfiguration());
+            modelBuilder.ApplyConfiguration(new MovieActorConfiguration());
         }
     }
 }

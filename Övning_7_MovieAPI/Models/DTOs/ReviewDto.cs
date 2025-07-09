@@ -1,4 +1,6 @@
-﻿namespace Övning_7_MovieAPI.Models.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Övning_7_MovieAPI.Models.DTOs
 {
-    public record ReviewDto(string ReviewerName, string Comment, int Rating);
+    public record ReviewDto(string ReviewerName, string Comment, double Rating);
 }
