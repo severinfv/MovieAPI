@@ -1,4 +1,4 @@
-﻿namespace Övning_7_MovieAPI.Controllers
+﻿namespace Movies.API.Controllers
 {
     public class PaginationMetadata
     {

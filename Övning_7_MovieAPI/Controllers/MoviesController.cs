@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Övning_7_MovieAPI.Data;
-using Övning_7_MovieAPI.Models.DTOs;
-using Övning_7_MovieAPI.Models.Entities;
+using Movies.Shared.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Text.Json;
 
-namespace Övning_7_MovieAPI.Controllers
+namespace Movies.API.Controllers
 {
     [Route("api/movies")]
     [ApiController]

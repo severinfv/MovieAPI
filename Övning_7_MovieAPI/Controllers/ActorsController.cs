@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using Övning_7_MovieAPI.Data;
-using Övning_7_MovieAPI.Models.DTOs;
-using Övning_7_MovieAPI.Models.Entities;
+using Movies.Shared.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Övning_7_MovieAPI.Controllers
-{ 
+namespace Movies.API.Controllers
+{
     [Route("api/actors")]
     [ApiController]
     public class ActorsController : ControllerBase
@@ -57,18 +54,18 @@ namespace Övning_7_MovieAPI.Controllers
             {
                 if (addRole == null)
                     return BadRequest("Provide actorId and role in json body");
-                
+
                 ActorId = addRole.ActorId;
                 role = addRole.Role;
             }
-            else 
+            else
             {
                 if (actorId == null)
                     return BadRequest("Provide actorId in query when includeRole is false");
 
                 ActorId = actorId.Value;
             }
- 
+
             var actor = await _context.Actors.FindAsync(ActorId);
             if (actor == null)
                 return NotFound($"No actor with id {ActorId} in database");

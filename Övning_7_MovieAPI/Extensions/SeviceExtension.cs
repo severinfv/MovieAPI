@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Övning_7_MovieAPI.Data;
 
-namespace Övning_7_MovieAPI.Extensions
+namespace Movies.API.Extensions
 {
     public static class ServiceExtension
     {

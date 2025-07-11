@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Övning_7_MovieAPI.Data;
-using Övning_7_MovieAPI.Models.DTOs;
-using Övning_7_MovieAPI.Models.DTOs.Reports;
+using Movies.Shared.DTOs;
+using Movies.Shared.DTOs.Reports;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Övning_7_MovieAPI.Controllers
+namespace Movies.API.Controllers
 {
     [Route("api/reports")]
     [ApiController]
@@ -42,7 +41,7 @@ namespace Övning_7_MovieAPI.Controllers
             var topgenres = await _context.Movies
                 .SelectMany(m => m.Genres, (m, mg) => new { mg.MovieGenre, m.IMDBRating })
                 .GroupBy(g => g.MovieGenre)
-                .Select(ms => new GenreAvgScore { Genre = ms.Key, AvgRating = Math.Round(ms.Average(x => x.IMDBRating), 2)})
+                .Select(ms => new GenreAvgScore { Genre = ms.Key, AvgRating = Math.Round(ms.Average(x => x.IMDBRating), 2) })
                 .OrderByDescending(g => g.AvgRating).Take(nr).ToListAsync();
 
             return Ok(topgenres);
@@ -69,10 +68,10 @@ namespace Övning_7_MovieAPI.Controllers
         public async Task<ActionResult<IEnumerable<TopGenreDto>>> GetVersatileActors(int nr)
         {
             var versatile = await _context.Actors
-                .Select(a => new 
-                { 
-                    a.Name, 
-                    GenresPlayed = a.Movies.SelectMany(m=>m.Genres.Select(g=>g.MovieGenre)).Distinct().Count()
+                .Select(a => new
+                {
+                    a.Name,
+                    GenresPlayed = a.Movies.SelectMany(m => m.Genres.Select(g => g.MovieGenre)).Distinct().Count()
                 })
                 .OrderByDescending(g => g.GenresPlayed).Take(nr).ToListAsync();
 
@@ -85,6 +84,7 @@ namespace Övning_7_MovieAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CollaborationsDto>))]
         public async Task<ActionResult<IEnumerable<CollaborationsDto>>> GetCollaborations()
         {
+
             var collabs = await _context.Movies
                 .SelectMany(m => m.Actors, (m, a) => new { m, actor = a.Name, director = m.Director.Name })
                 .GroupBy(g => new { g.actor, g.director })
@@ -93,12 +93,14 @@ namespace Övning_7_MovieAPI.Controllers
                     Director = ad.Key.director,
                     Actor = ad.Key.actor,
                     Count = ad.Count(),
-                    Movies = ad.Select(g => new MovieDto { 
-                        Id = g.m.Id, 
-                        Title = g.m.Title, 
-                        Year = g.m.Year.Year, 
-                        Runtime = g.m.Runtime, 
-                        IMDBRating = g.m.IMDBRating })
+                    Movies = ad.Select(g => new MovieDto
+                    {
+                        Id = g.m.Id,
+                        Title = g.m.Title,
+                        Year = g.m.Year.Year,
+                        Runtime = g.m.Runtime,
+                        IMDBRating = g.m.IMDBRating
+                    })
                     .ToList()
                 })
                 .OrderByDescending(g => g.Count).Take(40).ToListAsync();
@@ -118,7 +120,7 @@ namespace Övning_7_MovieAPI.Controllers
             {
                 return BadRequest($"Invalid year {year}. Year must not be in the future (max: {currentYear}).");
             }
-            
+
             var recentDirectors = await _context.Directors
                 .Where(d => d.Movies.Any(m => m.Year.Year >= year))
                 .Select(d => new DirectorDto
@@ -136,7 +138,7 @@ namespace Övning_7_MovieAPI.Controllers
             }
 
             return Ok(recentDirectors);
-         
+
         }
 
     }

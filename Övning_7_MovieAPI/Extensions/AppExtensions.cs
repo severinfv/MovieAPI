@@ -1,7 +1,6 @@
-﻿using Övning_7_MovieAPI.Data;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
-namespace Övning_7_MovieAPI.Extensions
+namespace Movies.API.Extensions
 {
     public static class AppExtensions
     {
@@ -14,7 +13,7 @@ namespace Övning_7_MovieAPI.Extensions
 
                 try
                 {
-                    await SeedData.InitAsync(context);
+                    //await SeedData.InitAsync(context);
                 }
                 catch (Exception ex)
                 {

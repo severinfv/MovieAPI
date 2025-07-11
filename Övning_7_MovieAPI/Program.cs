@@ -1,9 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Övning_7_MovieAPI.Data;
-using Övning_7_MovieAPI.Extensions;
+﻿using Movies.API.Extensions;
 
-namespace Övning_7_MovieAPI
+namespace Movies.API
 {
     public class Program
     {
