@@ -1,6 +1,9 @@
-﻿using Movies.API.Extensions;
+﻿using _Movies.API.Extensions;
+using Domain.Contracts.Repositories;
+using Microsoft.Build.Framework;
+using Movies.Infrastructure.Repositories;
 
-namespace Movies.API
+namespace _Movies.API
 {
     public class Program
     {
@@ -22,7 +25,7 @@ namespace Movies.API
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             // builder.Services.AddOpenApi();
 
-
+            builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 
             var app = builder.Build();
 

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Movies.API.Extensions
+namespace _Movies.API.Extensions
 {
     public static class AppExtensions
     {

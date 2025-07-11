@@ -1,21 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Domain.Contracts.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore; //remove eventually
 using Movies.Shared.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Text.Json;
 
-namespace Movies.API.Controllers
+namespace _Movies.API.Controllers
 {
     [Route("api/movies")]
     [ApiController]
     public class MoviesController : ControllerBase
     {
         private readonly MovieContext _context;
+        private readonly IMovieRepository movieRepository;
         const int maxMoviesPageSize = 10;
 
-        public MoviesController(MovieContext context)
+        public MoviesController(MovieContext context, IMovieRepository movieRepository)
         {
             _context = context;
+            this.movieRepository = movieRepository;
         }
 
         // GET: api/movies
@@ -29,13 +32,16 @@ namespace Movies.API.Controllers
             {
                 pageSize = maxMoviesPageSize;
             }
-            var movies = await _context.Movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 
-            var totalItemCount = await _context.Movies.CountAsync();
+            var movies = await movieRepository.GetMoviesAsync();
+
+            var dtos =  movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
+
+            var totalItemCount = dtos.Count();
             var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
-            return Ok(movies);
+            return Ok(dtos);
         }
 
         // GET: api/Movies/5
@@ -45,13 +51,14 @@ namespace Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
-            var movie = await _context.Movies.Where(m => m.Id == id).Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).FirstOrDefaultAsync();
-
+            var movie = await movieRepository.GetMovieAsync(id);
 
             if (movie == null)
                 return NotFound();
 
-            return Ok(movie);
+            var dto = new MovieDto { Id = movie.Id, Title = movie.Title, Year = movie.Year.Year, Runtime = movie.Runtime, IMDBRating = movie.IMDBRating };
+
+            return Ok(dto);
         }
 
 
@@ -62,24 +69,26 @@ namespace Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MovieDetailsDto>> GetMovieWithDetails(int id)
         {
-            var movie = await _context.Movies.Where(m => m.Id == id).Select(m => new MovieDetailsDto
-            {
-                Id = m.Id,
-                Title = m.Title,
-                Year = m.Year.Year,
-                DirectorName = m.Director.Name,
-                Runtime = m.Runtime,
-                IMDBRating = m.IMDBRating,
-                Genres = m.Genres.Select(g => new GenreDto(g.MovieGenre)),
-                Actors = m.Actors.Select(a => new ActorDto(a.Name)),
-                Reviews = m.Reviews.Select(r => new ReviewDto(r.ReviewerName, r.Comment, r.Rating)),
-            })
-            .FirstOrDefaultAsync();
-
+            var movie = await movieRepository.GetMovieAsync(id);
             if (movie == null)
                 return NotFound();
 
-            return Ok(movie);
+            var dto = new MovieDetailsDto
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Year = movie.Year.Year,
+                DirectorName = movie.Director.Name,
+                Runtime = movie.Runtime,
+                IMDBRating = movie.IMDBRating,
+                Genres = movie.Genres.Select(g => new GenreDto(g.MovieGenre)),
+                Actors = movie.Actors.Select(a => new ActorDto(a.Name)),
+                Reviews = movie.Reviews.Select(r => new ReviewDto(r.ReviewerName, r.Comment, r.Rating)),
+            };
+
+
+
+            return Ok(dto);
         }
 
         // PUT: api/Movies/5
@@ -91,7 +100,7 @@ namespace Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> PutMovie(int id, MovieUpdateDto dto)
         {
-            var movie = await _context.Movies.FirstOrDefaultAsync(s => s.Id == id);
+            var movie = await movieRepository.GetMovieAsync(id);
 
             if (movie is null) return NotFound();
 
@@ -135,7 +144,7 @@ namespace Movies.API.Controllers
                 IMDBRating = dto.IMDBRating,
             };
 
-            _context.Movies.Add(movie);
+            movieRepository.Create(movie);
             await _context.SaveChangesAsync();
 
             var movieDto = new MovieDto { Id = movie.Id, Title = movie.Title, Year = movie.Year.Year, Runtime = movie.Runtime, IMDBRating = movie.IMDBRating };
@@ -149,13 +158,13 @@ namespace Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await movieRepository.GetMovieAsync(id);
             if (movie == null)
             {
                 return NotFound();
             }
 
-            _context.Movies.Remove(movie);
+            movieRepository.Delete(movie);
             await _context.SaveChangesAsync();
 
             return NoContent();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Movies.API.Extensions
+namespace _Movies.API.Extensions
 {
     public static class ServiceExtension
     {

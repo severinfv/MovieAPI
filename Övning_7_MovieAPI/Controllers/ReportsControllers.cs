@@ -4,7 +4,7 @@ using Movies.Shared.DTOs;
 using Movies.Shared.DTOs.Reports;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Movies.API.Controllers
+namespace _Movies.API.Controllers
 {
     [Route("api/reports")]
     [ApiController]

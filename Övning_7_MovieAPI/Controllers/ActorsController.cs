@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Movies.Shared.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Movies.API.Controllers
+namespace _Movies.API.Controllers
 {
     [Route("api/actors")]
     [ApiController]
