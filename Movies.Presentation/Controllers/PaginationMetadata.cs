@@ -1,4 +1,4 @@
-﻿namespace _Movies.API.Controllers
+﻿namespace Movies.Presentation.Controllers
 {
     public class PaginationMetadata
     {
@@ -14,6 +14,6 @@
             CurrentPage = currentPage;
             TotalPageCount = (int)Math.Ceiling(totalItemCount / (double)pageSize);
         }
-        
+
     }
 }

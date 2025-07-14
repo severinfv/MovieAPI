@@ -1,25 +1,24 @@
 ﻿using Domain.Contracts.Repositories;
 using Movies.Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Movies.Infrastructure.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly Lazy<IMovieRepository> movieRepository;
+    private readonly Lazy<IActorRepository> actorRepository;
     public IMovieRepository MovieRepository => movieRepository.Value;
+    public IActorRepository ActorRepository => actorRepository.Value;
 
-    // .. more repos
-
-    private readonly MovieContext context;
-    public UnitOfWork(MovieContext context)
+    private readonly ApplicationDbContext context;
+    public UnitOfWork(
+        ApplicationDbContext context,
+        Lazy<IMovieRepository> movieRepository,
+        Lazy<IActorRepository> actorRepository)
     {
-        movieRepository = new Lazy<IMovieRepository>(() => new MovieRepository(context));
-        this.context = context;
+        this.movieRepository = movieRepository ?? throw new ArgumentNullException(nameof(movieRepository));
+        this.actorRepository = actorRepository ?? throw new ArgumentNullException(nameof(actorRepository));
+        this.context = context ?? throw new ArgumentNullException(nameof(context));
     }
     public async Task CompleteAsync() => await context.SaveChangesAsync();
 

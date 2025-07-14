@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Models.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Movies.Infrastructure.Data;
 using Movies.Shared.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace _Movies.API.Controllers
+namespace Movies.Presentation.Controllers
 {
 
     [ApiController]
@@ -11,8 +14,8 @@ namespace _Movies.API.Controllers
     [Produces("application/json")]
     public class ReviewsController : ControllerBase
     {
-        private readonly MovieContext _context;
-        public ReviewsController(MovieContext context)
+        private readonly ApplicationDbContext _context;
+        public ReviewsController(ApplicationDbContext context)
         {
             _context = context;
         }

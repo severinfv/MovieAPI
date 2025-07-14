@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace _Movies.API.Extensions
+namespace Movies.API.Extensions
 {
     public static class AppExtensions
     {
@@ -9,7 +9,7 @@ namespace _Movies.API.Extensions
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var serviceProvider = scope.ServiceProvider;
-                var context = serviceProvider.GetRequiredService<MovieContext>();
+                var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
 
                 try
                 {

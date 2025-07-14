@@ -1,24 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Movies.Shared.DTOs;
+using Service.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace _Movies.API.Controllers
+namespace Movies.Presentation.Controllers
 {
     [Route("api/actors")]
     [ApiController]
     public class ActorsController : ControllerBase
     {
-        private readonly MovieContext _context;
-
-        public ActorsController(MovieContext context)
+        public readonly IServiceManager serviceManager;
+        public ActorsController(IServiceManager serviceManager)
         {
-            _context = context;
+            this.serviceManager = serviceManager;
         }
+
+        [HttpGet("{movieId:int}")]
+        [SwaggerOperation(Summary = "Get movie actors", Description = "Gets all actors by their MovieId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsById(int movieId)
+        {
+            var actorDtos = await serviceManager.ActorService.GetActorsAsync(movieId);
+            return Ok(actorDtos);
+
+        }
+        /*
         [HttpGet]  // ToDo: trim and nulls
         [SwaggerOperation(Summary = "Get all or filtered Actors", Description = "Gets all actors, or filter by name or search query.")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
-        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActor([FromQuery] string? name, [FromQuery] string? searchquery)
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActors([FromQuery] string? name, [FromQuery] string? searchquery)
         {
             var collection = _context.Actors as IQueryable<Actor>;
             if (!string.IsNullOrWhiteSpace(name))
@@ -98,6 +110,6 @@ namespace _Movies.API.Controllers
         {
             return _context.Actors.Any(e => e.Id == id);
         }
-
+        */
     }
 }

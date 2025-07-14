@@ -1,11 +1,7 @@
-﻿using _Movies.API.Extensions;
-using Domain.Contracts.Repositories;
-using Microsoft.Build.Framework;
-using Movies.Infrastructure.Repositories;
-using Movies.Services;
-using Service.Contracts;
+﻿using Movies.API.Extensions;
+using Movies.Presentation;
 
-namespace _Movies.API
+namespace Movies.API
 {
     public class Program
     {
@@ -16,19 +12,12 @@ namespace _Movies.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true);
+            builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
+                .AddApplicationPart(typeof(AssemblyReference).Assembly);
 
-            builder.Services.AddSwaggerGen(opt =>
-            {
-                opt.EnableAnnotations();
-            });
-
-
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            // builder.Services.AddOpenApi();
-
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IServiceManager, ServiceManager>();
+            builder.Services.AddSwaggerGen(opt => { opt.EnableAnnotations(); });
+            builder.Services.AddRepositories();
+            builder.Services.AddServiceLayer();
 
             var app = builder.Build();
 
@@ -40,14 +29,11 @@ namespace _Movies.API
                 {
                     opt.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 });
-                //app.MapOpenApi();
                 await app.SeedDataAsync();
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();

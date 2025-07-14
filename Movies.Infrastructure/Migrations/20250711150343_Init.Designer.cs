@@ -11,7 +11,7 @@ using Movies.Infrastructure.Data;
 
 namespace Movies.Infrastructure.Migrations
 {
-    [DbContext(typeof(MovieContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250711150343_Init")]
     partial class Init
     {

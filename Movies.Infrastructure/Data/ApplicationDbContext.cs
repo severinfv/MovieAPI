@@ -4,9 +4,9 @@ using Movies.Infrastructure.Data.Configurations;
 
 namespace Movies.Infrastructure.Data
 {
-    public class MovieContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
-        public MovieContext(DbContextOptions<MovieContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }

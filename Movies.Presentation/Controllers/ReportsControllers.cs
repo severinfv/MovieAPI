@@ -1,19 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Movies.Infrastructure.Data;
 using Movies.Shared.DTOs;
 using Movies.Shared.DTOs.Reports;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace _Movies.API.Controllers
+namespace Movies.Presentation.Controllers
 {
     [Route("api/reports")]
     [ApiController]
     [Produces("application/json")]
     public class ReportsControllers : ControllerBase
     {
-        private readonly MovieContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ReportsControllers(MovieContext context)
+        public ReportsControllers(ApplicationDbContext context)
         {
             _context = context;
         }

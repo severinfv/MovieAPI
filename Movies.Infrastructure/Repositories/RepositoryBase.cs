@@ -7,10 +7,9 @@ namespace Movies.Infrastructure.Repositories
 {
     public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class //do EntityBase
     {
-        //protected MovieContext Context { get; }
         protected DbSet<T> DbSet { get; }
 
-        public RepositoryBase(MovieContext context)
+        public RepositoryBase(ApplicationDbContext context)
         {
             //Context = context;
             DbSet = context.Set<T>();
@@ -22,7 +21,6 @@ namespace Movies.Infrastructure.Repositories
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges = false) =>
             !trackChanges ? DbSet.Where(expression).AsNoTracking() :
                             DbSet.Where(expression);
-
 
         public void Create(T entity) => DbSet.Add(entity);
 

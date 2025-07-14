@@ -8,7 +8,7 @@ namespace Movies.Infrastructure.Data
 {
     public class SeedData
     {
-        internal static async Task InitAsync(MovieContext context)
+        internal static async Task InitAsync(ApplicationDbContext context)
         {
             Console.WriteLine("SeedData: Starting...");
             if (await context.Movies.AnyAsync())
