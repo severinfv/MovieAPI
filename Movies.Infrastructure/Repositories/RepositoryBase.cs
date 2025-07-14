@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Movies.Infrastructure.Repositories
 {
-    public class RepositoryBase<T> : IRepositoryBase<T> where T : class //do EntityBase
+    public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class //do EntityBase
     {
         //protected MovieContext Context { get; }
         protected DbSet<T> DbSet { get; }

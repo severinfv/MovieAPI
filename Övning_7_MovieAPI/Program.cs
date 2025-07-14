@@ -2,6 +2,8 @@
 using Domain.Contracts.Repositories;
 using Microsoft.Build.Framework;
 using Movies.Infrastructure.Repositories;
+using Movies.Services;
+using Service.Contracts;
 
 namespace _Movies.API
 {
@@ -26,6 +28,7 @@ namespace _Movies.API
             // builder.Services.AddOpenApi();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
             var app = builder.Build();
 

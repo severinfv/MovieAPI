@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36109.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_Movies.API", "Övning_7_MovieAPI\_Movies.API.csproj", "{9793C9DD-C4AB-4C54-9B8A-6950527DFE0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.API", "Övning_7_MovieAPI\Movies.API.csproj", "{9793C9DD-C4AB-4C54-9B8A-6950527DFE0A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Contracts", "Domain.Contracts\Domain.Contracts.csproj", "{7415A06A-1A9F-4BB2-9833-BE86472D1D36}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.Services", "Movies.Services\Movies.Services.csproj", "{11D314E5-2138-463F-A551-81FD713601E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service.Contracts", "Service.Contracts\Service.Contracts.csproj", "{6E8590E7-945E-4BAC-B4AD-1F996A051493}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{11D314E5-2138-463F-A551-81FD713601E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11D314E5-2138-463F-A551-81FD713601E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11D314E5-2138-463F-A551-81FD713601E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E8590E7-945E-4BAC-B4AD-1F996A051493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E8590E7-945E-4BAC-B4AD-1F996A051493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E8590E7-945E-4BAC-B4AD-1F996A051493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E8590E7-945E-4BAC-B4AD-1F996A051493}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,8 @@ Global
 		{5C1BB59E-A473-4050-8CCB-2C25507378E2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5615423C-FA5D-4C8B-8B8B-914782CEDEE6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7415A06A-1A9F-4BB2-9833-BE86472D1D36} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{11D314E5-2138-463F-A551-81FD713601E7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{6E8590E7-945E-4BAC-B4AD-1F996A051493} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA9618A5-2C2E-4EDD-94EC-77090CF09A20}

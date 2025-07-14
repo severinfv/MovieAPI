@@ -1,6 +1,4 @@
-﻿using Domain.Contracts.Repositories;
-
-namespace Movies.Infrastructure.Repositories;
+﻿namespace Domain.Contracts.Repositories;
 
 public interface IUnitOfWork
 {

@@ -1,8 +1,8 @@
 ﻿using Domain.Contracts.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; //remove eventually
-using Movies.Infrastructure.Repositories;
 using Movies.Shared.DTOs;
+using Service.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Text.Json;
 
@@ -12,12 +12,13 @@ namespace _Movies.API.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly IUnitOfWork uow;
+        private readonly IServiceManager serviceManager;
+       // private readonly IUnitOfWork uow;
         const int maxMoviesPageSize = 10;
 
-        public MoviesController(IUnitOfWork uow)
+        public MoviesController(IServiceManager serviceManager)
         {
-            this.uow = uow;
+            this.serviceManager = serviceManager;
         }
 
         // GET: api/movies
@@ -25,24 +26,23 @@ namespace _Movies.API.Controllers
         [SwaggerOperation(Summary = "Gets all movies", Description = "Gets a short info of all movies (with pagination)")]
         // [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<MovieDto>))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<(IEnumerable<MovieDto>, PaginationMetadata)>> GetMovie(int pageNumber = 1, int pageSize = 5)
+
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovie(bool includeActors)
         {
-            if (pageSize > maxMoviesPageSize)
-            {
-                pageSize = maxMoviesPageSize;
-            }
+            // if (pageSize > maxMoviesPageSize)
+            // {
+            //     pageSize = maxMoviesPageSize;
+            // }
 
-            var movies = await uow.MovieRepository.GetMoviesAsync();
+            var dtos = await serviceManager.MovieService.GetMoviesAsync(includeActors=false); //.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
+            
+            //var totalItemCount = dtos.Count();
+            //var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
 
-            var dtos =  movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
-
-            var totalItemCount = dtos.Count();
-            var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
-
-            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+            //Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
             return Ok(dtos);
         }
-
+        
         // GET: api/Movies/5
         [HttpGet("{id:int}")]
         [SwaggerOperation(Summary = "Gets movie by id", Description = "Gets a short info of a movie by Id.")]
@@ -50,17 +50,11 @@ namespace _Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
-            var movie = await uow.MovieRepository.GetMovieAsync(id);
-
-            if (movie == null)
-                return NotFound();
-
-            var dto = new MovieDto { Id = movie.Id, Title = movie.Title, Year = movie.Year.Year, Runtime = movie.Runtime, IMDBRating = movie.IMDBRating };
-
+            var dto = await serviceManager.MovieService.GetMovieAsync(id);
             return Ok(dto);
         }
 
-
+        /*
         // GET: api/Movies/5/details
         [HttpGet("{id}/details")]
         [SwaggerOperation(Summary = "Gets movie with details by id", Description = "Gets a detailed info of a movie by Id.")]
@@ -150,6 +144,7 @@ namespace _Movies.API.Controllers
             await uow.CompleteAsync();
 
             return NoContent();
-        }
+        } 
+        */
     }
 }

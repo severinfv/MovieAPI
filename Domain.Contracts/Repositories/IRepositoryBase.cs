@@ -11,8 +11,8 @@ namespace Domain.Contracts.Repositories
     {
         IQueryable<T> FindAll(bool trackChanges = false);
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges = false);
-        void Create(T Company);
-        void Update(T Company);
-        void Delete(T Company);
+        void Create(T entity);
+        void Update(T entity);
+        void Delete(T entity);
     }
 }

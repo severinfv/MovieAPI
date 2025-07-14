@@ -1,16 +1,16 @@
-﻿using Movies.Infrastructure.Repositories;
+﻿using Domain.Contracts.Repositories;
+using Service.Contracts;
 
-namespace Movies.Services
+namespace Movies.Services;
+
+public class ServiceManager : IServiceManager
 {
-    public class ServiceManager
-    {
-        private Lazy<MovieService> movieService;
-        public MovieService MovieService => movieService.Value;
-        //.. services
-        public ServiceManager(IUnitOfWork uow) 
-        { 
-            movieService = new Lazy<MovieService>(() => new MovieService());
-        }
-
+    private Lazy<IMovieService> movieService;
+    public IMovieService MovieService => movieService.Value;
+    //.. services
+    public ServiceManager(IUnitOfWork uow) 
+    { 
+        movieService = new Lazy<IMovieService>(() => new MovieService(uow));
     }
+
 }
