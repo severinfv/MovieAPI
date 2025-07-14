@@ -1,6 +1,7 @@
 ﻿using Domain.Contracts.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore; //remove eventually
+using Movies.Infrastructure.Repositories;
 using Movies.Shared.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Text.Json;
@@ -11,14 +12,12 @@ namespace _Movies.API.Controllers
     [ApiController]
     public class MoviesController : ControllerBase
     {
-        private readonly MovieContext _context;
-        private readonly IMovieRepository movieRepository;
+        private readonly IUnitOfWork uow;
         const int maxMoviesPageSize = 10;
 
-        public MoviesController(MovieContext context, IMovieRepository movieRepository)
+        public MoviesController(IUnitOfWork uow)
         {
-            _context = context;
-            this.movieRepository = movieRepository;
+            this.uow = uow;
         }
 
         // GET: api/movies
@@ -33,7 +32,7 @@ namespace _Movies.API.Controllers
                 pageSize = maxMoviesPageSize;
             }
 
-            var movies = await movieRepository.GetMoviesAsync();
+            var movies = await uow.MovieRepository.GetMoviesAsync();
 
             var dtos =  movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
 
@@ -51,7 +50,7 @@ namespace _Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
-            var movie = await movieRepository.GetMovieAsync(id);
+            var movie = await uow.MovieRepository.GetMovieAsync(id);
 
             if (movie == null)
                 return NotFound();
@@ -69,7 +68,7 @@ namespace _Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MovieDetailsDto>> GetMovieWithDetails(int id)
         {
-            var movie = await movieRepository.GetMovieAsync(id);
+            var movie = await uow.MovieRepository.GetMovieAsync(id);
             if (movie == null)
                 return NotFound();
 
@@ -100,7 +99,7 @@ namespace _Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> PutMovie(int id, MovieUpdateDto dto)
         {
-            var movie = await movieRepository.GetMovieAsync(id);
+            var movie = await uow.MovieRepository.GetMovieAsync(id);
 
             if (movie is null) return NotFound();
 
@@ -109,22 +108,7 @@ namespace _Movies.API.Controllers
             movie.Runtime = dto.Runtime;
             movie.IMDBRating = dto.IMDBRating;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MovieExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await uow.CompleteAsync();
             return NoContent();
         }
 
@@ -144,8 +128,8 @@ namespace _Movies.API.Controllers
                 IMDBRating = dto.IMDBRating,
             };
 
-            movieRepository.Create(movie);
-            await _context.SaveChangesAsync();
+            uow.MovieRepository.Create(movie);
+            await uow.CompleteAsync();
 
             var movieDto = new MovieDto { Id = movie.Id, Title = movie.Title, Year = movie.Year.Year, Runtime = movie.Runtime, IMDBRating = movie.IMDBRating };
             return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movieDto);
@@ -158,21 +142,16 @@ namespace _Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movie = await movieRepository.GetMovieAsync(id);
+            var movie = await uow.MovieRepository.GetMovieAsync(id);
             if (movie == null)
             {
                 return NotFound();
             }
 
-            movieRepository.Delete(movie);
-            await _context.SaveChangesAsync();
+            uow.MovieRepository.Delete(movie);
+            await uow.CompleteAsync();
 
             return NoContent();
-        }
-
-        private bool MovieExists(int id)
-        {
-            return _context.Movies.Any(e => e.Id == id);
         }
     }
 }
