@@ -90,8 +90,7 @@ namespace _Movies.API.Controllers
             return Ok(dto);
         }
 
-        // PUT: api/Movies/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update Movie", Description = "Updates an existing movie by ID.")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -99,7 +98,7 @@ namespace _Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> PutMovie(int id, MovieUpdateDto dto)
         {
-            var movie = await uow.MovieRepository.GetMovieAsync(id);
+            var movie = await uow.MovieRepository.GetMovieAsync(id, trackChanges: true);
 
             if (movie is null) return NotFound();
 
@@ -113,7 +112,6 @@ namespace _Movies.API.Controllers
         }
 
         // POST: api/Movies
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         [SwaggerOperation(Summary = "Create a movie.", Description = "Creates a new movie.")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MovieDto))]

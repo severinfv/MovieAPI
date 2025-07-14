@@ -5,26 +5,18 @@ using Movies.Infrastructure.Data;
 
 namespace Movies.Infrastructure.Repositories
 {
-    public class MovieRepository : IMovieRepository
+    public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     {
-        private readonly MovieContext context;
-        public MovieRepository(MovieContext context)
-        {
-            this.context = context;
-        }
-        public async Task<List<Movie>> GetMoviesAsync(bool include = false)
-        {
-            return include ? await context.Movies.Include(c => c.Actors).ToListAsync() :
-                   await context.Movies.ToListAsync();
-        }
-        public async Task<Movie?> GetMovieAsync(int id)
-        {
-            return await context.Movies.FirstOrDefaultAsync(m => m.Id == id);
-        }
-        public void Create(Movie movie) => context.Movies.Add(movie);
+        public MovieRepository(MovieContext context) : base(context) { }
 
-        public void Update(Movie movie) => context.Movies.Update(movie);
-
-        public void Delete(Movie movie) => context.Movies.Remove(movie);
+        public async Task<List<Movie>> GetMoviesAsync(bool include = false, bool trackChanges = false)
+        {
+            return include ? await FindAll(trackChanges).Include(c => c.Actors).ToListAsync() :
+                             await FindAll(trackChanges).ToListAsync();
+        }
+        public async Task<Movie?> GetMovieAsync(int id, bool trackChanges = false)
+        {
+            return await FindByCondition(m => m.Id == id, trackChanges).FirstOrDefaultAsync();
+        }
     }
 }
