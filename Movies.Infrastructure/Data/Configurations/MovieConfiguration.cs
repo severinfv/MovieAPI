@@ -30,6 +30,7 @@ namespace Movies.Infrastructure.Data.Configurations
 
             builder.HasOne(c => c.Director)
                 .WithMany(e => e.Movies)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(s => s.MovieDetails)

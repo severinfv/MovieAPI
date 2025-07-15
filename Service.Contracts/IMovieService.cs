@@ -6,7 +6,14 @@ namespace Service.Contracts
     {
         Task<bool> MovieExistsAsync(int id);
         Task<MovieDto> GetMovieAsync(int id, bool trackChanges = false);
-        //Task<IEnumerable<MovieDto>> GetMoviesAsync(bool includeActors, bool trackChanges = false);
         Task<MovieDetailsDto> GetMovieWithDetailsAsync(int id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false);
+        Task<IEnumerable<MovieDto>> GetMoviesAsync(bool trackChanges = false);
+        Task<MovieDto> AddMovieAsync(MovieCreateDto dto, bool trackChanges = false);
+        Task UpdateMovieAsync(int id, MovieUpdateDto dto, bool trackChanges = true);
+        Task DeleteMovieAsync(int id, bool trackChanges = false);
+        void SaveChangesAsync();
+
+
+
     }
 }

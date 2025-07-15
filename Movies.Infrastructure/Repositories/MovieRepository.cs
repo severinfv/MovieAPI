@@ -9,12 +9,9 @@ namespace Movies.Infrastructure.Repositories
     public class MovieRepository : RepositoryBase<Movie>, IMovieRepository
     {
         public MovieRepository(ApplicationDbContext context) : base(context) { }
+
         public async Task<bool> AnyAsync(int id) => await DbSet.AnyAsync(m => m.Id == id);
-        public async Task<List<Movie>> GetMoviesAsync(bool include = false, bool trackChanges = false)
-        {
-            return include ? await FindAll(trackChanges).Include(c => c.Actors).ToListAsync() :
-                             await FindAll(trackChanges).ToListAsync();
-        }
+
         public async Task<Movie?> GetMovieAsync(int id, bool trackChanges = false)
         {
             return await FindByCondition(m => m.Id == id, trackChanges).FirstOrDefaultAsync();
@@ -30,5 +27,11 @@ namespace Movies.Infrastructure.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<List<Movie>> GetMoviesAsync(bool trackChanges = false)
+        {
+            return await FindAll(trackChanges).ToListAsync();
+        }
+        
     }
 }
