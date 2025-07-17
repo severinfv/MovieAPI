@@ -45,6 +45,7 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Gets movie by id", Description = "Gets a short info of a movie by Id.")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<MovieDto>> GetMovie(int id) =>
              Ok((MovieDto?) await serviceManager.MovieService.GetMovieAsync(id));
         

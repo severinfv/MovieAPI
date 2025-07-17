@@ -1,5 +1,6 @@
 ﻿using Domain.Contracts.Repositories;
 using Domain.Models.Entities;
+using Domain.Models.Exceptions;
 using Movies.Shared.DTOs;
 using Service.Contracts;
 
@@ -12,20 +13,26 @@ namespace Movies.Services
         {
             this.uow = uow;
         }
-
         public async Task<bool> MovieExistsAsync(int id) => await uow.MovieRepository.ExistsAsync(id);
         public async Task<MovieDto> GetMovieAsync(int id, bool trackChanges = false)
         {
             
-            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges);
-            if (movie == null) return null!;
-            var dto = new MovieDto { Id = movie.Id, Title = movie.Title, Year = movie.Year.Year, Runtime = movie.Runtime, IMDBRating = movie.IMDBRating };
+            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges) ?? throw new MovieNotFoundException(id);
+
+            var dto = new MovieDto 
+            {
+                Id = movie.Id, 
+                Title = movie.Title, 
+                Year = movie.Year.Year, 
+                Runtime = movie.Runtime, 
+                IMDBRating = movie.IMDBRating 
+            };
+
             return dto;
         }
-        public async Task<MovieDetailsDto> GetMovieWithDetailsAsync (int id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false)
+        public async Task<MovieDetailsDto> GetMovieWithDetailsAsync (int id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false) 
         {
-            var movie = await uow.MovieRepository.GetMovieWithDetailsAsync(id, includeGenres, includeActors, includeReviews, trackChanges);
-            if (movie == null) return null!;
+            var movie = await uow.MovieRepository.GetMovieWithDetailsAsync(id, includeGenres, includeActors, includeReviews, trackChanges) ?? throw new MovieNotFoundException(id);
 
             var dto = new MovieDetailsDto
             {

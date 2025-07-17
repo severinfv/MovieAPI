@@ -1,4 +1,6 @@
-﻿using Movies.API.Extensions;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Movies.API.Extensions;
 using Movies.Presentation;
 
 namespace Movies.API
@@ -20,6 +22,11 @@ namespace Movies.API
             builder.Services.AddServiceLayer();
 
             var app = builder.Build();
+
+
+
+
+            app.ConfigureExceptionHandler();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
