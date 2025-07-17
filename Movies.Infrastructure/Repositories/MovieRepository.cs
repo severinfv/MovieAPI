@@ -10,12 +10,9 @@ namespace Movies.Infrastructure.Repositories
     {
         public MovieRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<bool> AnyAsync(int id) => await DbSet.AnyAsync(m => m.Id == id);
-
-        public async Task<Movie?> GetMovieAsync(int id, bool trackChanges = false)
-        {
-            return await FindByCondition(m => m.Id == id, trackChanges).FirstOrDefaultAsync();
-        }
+        public async Task<bool> ExistsAsync(int id) => await base.EntityExistsAsync(id);
+        public async Task<List<Movie>> GetAllAsync(bool trackChanges = false) => await FindAll(trackChanges).ToListAsync();
+        public async Task<Movie?> GetByIdAsync(int id, bool trackChanges) => await GetEntityByIdAsync(id, trackChanges);
 
         public async Task<Movie?> GetMovieWithDetailsAsync(int id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false)
         {
@@ -27,11 +24,10 @@ namespace Movies.Infrastructure.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
-
-        public async Task<List<Movie>> GetMoviesAsync(bool trackChanges = false)
+        /*public async Task<List<Movie>> GetMoviesAsync(bool trackChanges = false)
         {
             return await FindAll(trackChanges).ToListAsync();
-        }
+        }*/
         
     }
 }

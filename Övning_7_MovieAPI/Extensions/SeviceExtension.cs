@@ -19,8 +19,10 @@ namespace Movies.API.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IMovieRepository, MovieRepository>();
             services.AddScoped<IActorRepository, ActorRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
             services.AddScoped(provider => new Lazy<IMovieRepository>(() => provider.GetRequiredService<IMovieRepository>()));
             services.AddScoped(provider => new Lazy<IActorRepository>(() => provider.GetRequiredService<IActorRepository>()));
+            services.AddScoped(provider => new Lazy<IReviewRepository>(() => provider.GetRequiredService<IReviewRepository>()));
         }
 
         public static void AddServiceLayer(this IServiceCollection services)
@@ -28,8 +30,10 @@ namespace Movies.API.Extensions
             services.AddScoped<IServiceManager, ServiceManager>();
             services.AddScoped<IMovieService, MovieService>();
             services.AddScoped<IActorService, ActorService>();
+            services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped(provider => new Lazy<IMovieService>(() => provider.GetRequiredService<IMovieService>()));
             services.AddScoped(provider => new Lazy<IActorService>(() => provider.GetRequiredService<IActorService>()));
+            services.AddScoped(provider => new Lazy<IReviewService>(() => provider.GetRequiredService<IReviewService>()));
         }
-    }
+    } 
 }

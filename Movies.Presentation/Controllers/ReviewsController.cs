@@ -1,24 +1,49 @@
-﻿using Domain.Models.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Movies.Infrastructure.Data;
 using Movies.Shared.DTOs;
+using Service.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Movies.Presentation.Controllers
 {
-
     [ApiController]
     [Route("api/reviews")]
     [Produces("application/json")]
     public class ReviewsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public ReviewsController(ApplicationDbContext context)
+        public readonly IServiceManager serviceManager;
+        public ReviewsController(IServiceManager serviceManager)
         {
-            _context = context;
+            this.serviceManager = serviceManager;
         }
+
+        [HttpGet("{reviewId:int}")]
+        [SwaggerOperation(Summary = "Get a review by Id", Description = "Get a review by Id")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewAsync(int reviewId, bool trackChanges)
+        {
+            var reviewDtos = await serviceManager.ReviewService.GetReviewAsync(reviewId, trackChanges);
+            return Ok(reviewDtos);
+
+        }
+
+        [HttpGet("movie/{movieId:int}")]
+        [SwaggerOperation(Summary = "Get review for a movie", Description = "Gets reviews by the MovieId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewsFromMovieAsync(int movieId, bool trackChanges)
+        {
+            var reviewDtos = await serviceManager.ReviewService.GetReviewsFromMovieAsync(movieId, trackChanges);
+            return Ok(reviewDtos);
+
+        }
+
+
+
+
+
+        /*
 
         [HttpGet]
         [SwaggerOperation(Summary = "Get all reviews", Description = "Returns all reviews or filter by reviewer name or rating range.")]
@@ -38,7 +63,7 @@ namespace Movies.Presentation.Controllers
             var query = _context.Reviews.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(reviewerName))
-                query = query.Where(r => r.ReviewerName.ToLower().Contains(reviewerName.ToLower()));
+                query = query.Where(r => r.UserName.ToLower().Contains(reviewerName.ToLower()));
 
             if (!string.IsNullOrWhiteSpace(commentKeyword))
                 query = query.Where(r => r.Comment.ToLower().Contains(commentKeyword.ToLower()));
@@ -77,7 +102,7 @@ namespace Movies.Presentation.Controllers
 
             var review = new Review
             {
-                ReviewerName = dto.ReviewerName,
+                UserName = dto.ReviewerName,
                 Comment = dto.Comment,
                 Rating = dto.Rating,
                 ReviewAdded = DateTime.UtcNow,
@@ -88,6 +113,6 @@ namespace Movies.Presentation.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, review);
-        }
+        } */
     }
 }

@@ -1,8 +1,7 @@
 ﻿namespace Domain.Models.Entities
 {
-    public class Movie
+    public class Movie : Entity
     {
-        public int Id { get; set; }
         public string Title { get; set; } = null!;
         public DateOnly Year { get; set; }
         public int Runtime { get; set; }

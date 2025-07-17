@@ -13,10 +13,11 @@ namespace Movies.Services
             this.uow = uow;
         }
 
-        public async Task<bool> MovieExistsAsync(int id) => await uow.MovieRepository.AnyAsync(id);
+        public async Task<bool> MovieExistsAsync(int id) => await uow.MovieRepository.ExistsAsync(id);
         public async Task<MovieDto> GetMovieAsync(int id, bool trackChanges = false)
         {
-            var movie = await uow.MovieRepository.GetMovieAsync(id, trackChanges);
+            
+            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges);
             if (movie == null) return null!;
             var dto = new MovieDto { Id = movie.Id, Title = movie.Title, Year = movie.Year.Year, Runtime = movie.Runtime, IMDBRating = movie.IMDBRating };
             return dto;
@@ -38,10 +39,10 @@ namespace Movies.Services
                     ? movie.Genres.Select(g => new GenreDto(g.MovieGenre))
                     : Enumerable.Empty<GenreDto>(),
                 Actors = includeActors
-                    ? movie.Actors.Select(a => new ActorDto(a.Name))
+                    ? movie.Actors.Select(a => new ActorDto { Name = a.Name })
                     : Enumerable.Empty<ActorDto>(),
                 Reviews = includeReviews
-                    ? movie.Reviews.Select(r => new ReviewDto(r.ReviewerName, r.Comment, r.Rating))
+                    ? movie.Reviews.Select(r => new ReviewDto(r.UserName, r.Comment, r.Rating))
                     : Enumerable.Empty<ReviewDto>()
             };
 
@@ -50,7 +51,7 @@ namespace Movies.Services
 
         public async Task<IEnumerable<MovieDto>> GetMoviesAsync(bool trackChanges = false)
         {
-            var movies = await uow.MovieRepository.GetMoviesAsync(trackChanges);
+            var movies = await uow.MovieRepository.GetAllAsync(trackChanges);
             var dtos = movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating });
             return dtos;
         }
@@ -84,7 +85,7 @@ namespace Movies.Services
         public async Task UpdateMovieAsync(int id, MovieUpdateDto dto, bool trackChanges=true)
         {
 
-            var movie = await uow.MovieRepository.GetMovieAsync(id, trackChanges);
+            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges);
             if (movie is null)
             {
                 throw new KeyNotFoundException($"Movie with id {id} not found");
@@ -101,7 +102,7 @@ namespace Movies.Services
 
         public async Task DeleteMovieAsync(int id, bool trackChanges = false)
         {
-            var movie = await uow.MovieRepository.GetMovieAsync(id, trackChanges);
+            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges);
 
             if (movie != null)
                 uow.MovieRepository.Delete(movie);

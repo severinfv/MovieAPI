@@ -1,8 +1,7 @@
 ﻿namespace Domain.Models.Entities
 {
-    public class Genre
+    public class Genre : Entity
     {
-        public int Id { get; set; }
         public string MovieGenre { get; set; } = null!;
         public ICollection<Movie> Movies { get; } = new List<Movie>();
     }

@@ -1,17 +1,17 @@
 ﻿using Domain.Contracts.Repositories;
+using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Movies.Infrastructure.Data;
 using System.Linq.Expressions;
 
 namespace Movies.Infrastructure.Repositories
 {
-    public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class //do EntityBase
+    public abstract class  RepositoryBase<T> : IRepositoryBase<T> where T : Entity
     {
         protected DbSet<T> DbSet { get; }
 
         public RepositoryBase(ApplicationDbContext context)
         {
-            //Context = context;
             DbSet = context.Set<T>();
         }
         public IQueryable<T> FindAll(bool trackChanges = false) =>
@@ -21,6 +21,13 @@ namespace Movies.Infrastructure.Repositories
         public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges = false) =>
             !trackChanges ? DbSet.Where(expression).AsNoTracking() :
                             DbSet.Where(expression);
+
+        public async Task<bool> EntityExistsAsync(int id) => await DbSet.AnyAsync(m => m.Id == id);
+
+        public async Task<T?> GetEntityByIdAsync(int id, bool trackChanges = false)
+        {
+            return await FindByCondition(e => e.Id == id, trackChanges).FirstOrDefaultAsync();
+        }
 
         public void Create(T entity) => DbSet.Add(entity);
 

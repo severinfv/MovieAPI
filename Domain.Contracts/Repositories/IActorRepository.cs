@@ -2,8 +2,12 @@
 
 namespace Domain.Contracts.Repositories
 {
-    public interface IActorRepository
+    public interface IActorRepository : IRepositoryBase<Actor>
     {
-        Task<IEnumerable<Actor>> GetActorsAsync(int movieId, bool trackChanges = false);
+        Task<bool> ExistsAsync(int id);
+        Task<List<Actor>> GetAllAsync(bool trackChanges = false);
+        Task<Actor?> GetByIdAsync(int id, bool trackChanges);
+        Task<IEnumerable<Actor>> GetActorsByMovieIdAsync(int movieId, bool trackChanges);
+
     }
 }

@@ -16,16 +16,37 @@ namespace Movies.Presentation.Controllers
             this.serviceManager = serviceManager;
         }
 
-        [HttpGet("{movieId:int}")]
-        [SwaggerOperation(Summary = "Get movie actors", Description = "Gets all actors by their MovieId")]
+        [HttpGet("{actorId:int}")]
+        [SwaggerOperation(Summary = "Get movie actor", Description = "Gets an actors by Id")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsById(int movieId)
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorAsync(int actorId, bool includeFilms, bool trackChanges)
         {
-            var actorDtos = await serviceManager.ActorService.GetActorsAsync(movieId);
+            var actorDtos = await serviceManager.ActorService.GetActorAsync(actorId, includeFilms, trackChanges);
             return Ok(actorDtos);
 
         }
+
+        [HttpGet("movie/{movieId:int}")]
+        [SwaggerOperation(Summary = "Get movie actors", Description = "Gets all actors by their MovieId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsFromMovieAsync(int movieId, bool trackChanges)
+        {
+            var actorDtos = await serviceManager.ActorService.GetActorsFromMovieAsync(movieId, trackChanges);
+            return Ok(actorDtos);
+
+        }
+
+        [HttpGet]
+        [SwaggerOperation(Summary = "Get all actors", Description = "Gets a list of all actors")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsAsync()
+            => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorsAsync());
+
+
+
         /*
         [HttpGet]  // ToDo: trim and nulls
         [SwaggerOperation(Summary = "Get all or filtered Actors", Description = "Gets all actors, or filter by name or search query.")]

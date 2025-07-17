@@ -1,4 +1,6 @@
 ﻿using Domain.Contracts.Repositories;
+using Domain.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 using Movies.Shared.DTOs;
 using Service.Contracts;
 
@@ -11,18 +13,36 @@ public class ActorService : IActorService
     {
         this.uow = uow;
     }
-    public async Task<ActorDto> GetActorAsync(int id, bool trackChanges = false)
+    public async Task<bool> ActorExistsAsync(int id) => await uow.ActorRepository.ExistsAsync(id);
+
+    public async Task<ActorDto> GetActorAsync(int id, bool includeFilms = false, bool trackChanges = false)
     {
-        throw new NotImplementedException();
+        var actor = await uow.ActorRepository.GetByIdAsync(id, trackChanges);
+        if (actor == null) return null!;
+
+        var dto = new ActorDto {
+            Name = actor.Name,
+            Appeared = includeFilms
+                    ? actor.Movies.Select(g => new MovieDto { Title = g.Title, Year = g.Year.Year})
+                    : Enumerable.Empty<MovieDto>(),
+        };
+        return dto;
     }
 
-    public async Task<IEnumerable<ActorDto>> GetActorsAsync(int movieId, bool trackChanges = false)
+    public async Task<IEnumerable<ActorDto>> GetActorsAsync(bool trackChanges = false)
     {
-        var movieExists = await uow.MovieRepository.GetMovieAsync(movieId, trackChanges);
-        if (movieExists is null) return null!;
-
-        var actors = await uow.ActorRepository.GetActorsAsync(movieId, trackChanges);
-        var dtos = actors.Select(a => new ActorDto(a.Name));
+        var actors = await uow.ActorRepository.GetAllAsync(trackChanges);
+        var dtos = actors.Select(a => new ActorDto { Name = a.Name });
         return dtos;
     }
+
+    public async Task<IEnumerable<ActorDto>> GetActorsFromMovieAsync(int movieId, bool trackChanges = false)
+    {
+        var actors = await uow.ActorRepository.GetActorsByMovieIdAsync(movieId, trackChanges);
+        var dtos = actors.Select(a => new ActorDto { Name = a.Name });
+        return dtos;
+    }
+
+
+
 }
