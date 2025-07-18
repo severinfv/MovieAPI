@@ -161,8 +161,8 @@ namespace Movies.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ReviewAdded = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReviewText = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateAdded = table.Column<DateOnly>(type: "date", nullable: false),
+                    UserComment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserRating = table.Column<double>(type: "float", nullable: true),
                     MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)

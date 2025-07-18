@@ -27,6 +27,7 @@ public class DataSeedHostingService : IHostedService
         try
         {
             await ImdbDataSeed.InitAsync(context);
+            await UsersDataSeed.InitAsync(context);
         }
         catch (Exception ex)
         {

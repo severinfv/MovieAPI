@@ -2,8 +2,8 @@
 {
     public class Review : Entity
     {
-        public DateTime ReviewAdded { get; set; }
-        public string? ReviewText { get; set; } = null!;
+        public DateOnly DateAdded { get; set; }
+        public string? UserComment { get; set; } = null!;
         public double? UserRating { get; set; }
         public Guid MovieId { get; set; }
         public Movie Movie { get; set; } = null!;

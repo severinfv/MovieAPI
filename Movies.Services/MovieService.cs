@@ -55,7 +55,7 @@ namespace Movies.Services
                     ? movie.Actors.Select(a => new ActorDto { Name = a.Name })
                     : Enumerable.Empty<ActorDto>(),
                 Reviews = includeReviews
-                    ? movie.Reviews.Select(r => new ReviewDto(r.ApplicationUserId, r.ReviewText, r.UserRating))
+                    ? movie.Reviews.Select(r => new ReviewDto(r.ApplicationUserId, r.UserComment, r.UserRating))
                     : Enumerable.Empty<ReviewDto>()
             };
 

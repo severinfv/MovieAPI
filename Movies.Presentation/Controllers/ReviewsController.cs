@@ -17,7 +17,7 @@ namespace Movies.Presentation.Controllers
             this.serviceManager = serviceManager;
         }
 
-        [HttpGet("{reviewId:int}")]
+        [HttpGet("{reviewId:Guid}")]
         [SwaggerOperation(Summary = "Get a review by Id", Description = "Get a review by Id")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -25,10 +25,9 @@ namespace Movies.Presentation.Controllers
         {
             var reviewDtos = await serviceManager.ReviewService.GetReviewAsync(reviewId, trackChanges);
             return Ok(reviewDtos);
-
         }
 
-        [HttpGet("movie/{movieId:int}")]
+        [HttpGet("movie/{movieId:Guid}")]
         [SwaggerOperation(Summary = "Get review for a movie", Description = "Gets reviews by the MovieId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

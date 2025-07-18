@@ -12,7 +12,7 @@ using Movies.Infrastructure.Context;
 namespace Movies.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250718174634_Init")]
+    [Migration("20250718182644_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -189,13 +189,13 @@ namespace Movies.Infrastructure.Migrations
                     b.Property<Guid>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateOnly>("DateAdded")
+                        .HasColumnType("date");
+
                     b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ReviewAdded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReviewText")
+                    b.Property<string>("UserComment")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("UserRating")

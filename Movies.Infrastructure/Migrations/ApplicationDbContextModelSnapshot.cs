@@ -186,13 +186,13 @@ namespace Movies.Infrastructure.Migrations
                     b.Property<Guid>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateOnly>("DateAdded")
+                        .HasColumnType("date");
+
                     b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ReviewAdded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReviewText")
+                    b.Property<string>("UserComment")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("UserRating")

@@ -11,13 +11,13 @@ namespace Movies.Infrastructure.Data
     {
         public static async Task InitAsync(ApplicationDbContext context)
         {
-            Console.WriteLine("SeedData: Starting...");
+            Console.WriteLine("Seed IMDB Data: Starting...");
             if (await context.Movies.AnyAsync())
             {
                 //await context.Database.EnsureDeletedAsync();
                 //await context.Database.EnsureCreatedAsync();
-                await InitAsync(context);
-                Console.WriteLine("SeedData: Skip.");
+                //await InitAsync(context);
+                Console.WriteLine("Seed IMDB Data: Skip (already exists).");
                 return;
             }
 
