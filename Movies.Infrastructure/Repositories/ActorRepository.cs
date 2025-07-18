@@ -11,8 +11,8 @@ namespace Movies.Infrastructure.Repositories;
 public class ActorRepository : RepositoryBase<Actor>, IActorRepository
 {
     public ActorRepository(ApplicationDbContext context) : base(context) { }
-    public async Task<bool> ExistsAsync(int id) => await base.EntityExistsAsync(id);
-    public async Task<Actor?> GetByIdAsync(int id, bool trackChanges = false)
+    public async Task<bool> ExistsAsync(Guid id) => await base.EntityExistsAsync(id);
+    public async Task<Actor?> GetByIdAsync(Guid id, bool trackChanges = false)
     {
         IQueryable<Actor> query = FindByCondition(m => m.Id == id, trackChanges);
         query = query.Include(m => m.Movies);
@@ -35,7 +35,7 @@ public class ActorRepository : RepositoryBase<Actor>, IActorRepository
         return await PagedList<Actor>.PageAsync(query, parameters.PageNumber, parameters.PageSize);
     }
 
-    public async Task<IEnumerable<Actor>> GetActorsByMovieIdAsync(int movieId, bool trackChanges = false) 
+    public async Task<IEnumerable<Actor>> GetActorsByMovieIdAsync(Guid movieId, bool trackChanges = false) 
         => await FindByCondition(a => a.Movies.Any(m => m.Id == movieId), trackChanges).ToListAsync();
     
 

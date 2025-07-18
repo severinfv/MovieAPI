@@ -23,9 +23,9 @@ namespace Movies.Infrastructure.Repositories
             !trackChanges ? DbSet.Where(expression).AsNoTracking() :
                             DbSet.Where(expression);
 
-        public async Task<bool> EntityExistsAsync(int id) => await DbSet.AnyAsync(m => m.Id == id);
+        public async Task<bool> EntityExistsAsync(Guid id) => await DbSet.AnyAsync(m => m.Id == id);
 
-        public async Task<T?> GetEntityByIdAsync(int id, bool trackChanges = false)
+        public async Task<T?> GetEntityByIdAsync(Guid id, bool trackChanges = false)
             => await FindByCondition(e => e.Id == id, trackChanges).FirstOrDefaultAsync();
 
         public async Task<PagedList<T>> GetAllAsync(EntityParameters parameters, bool trackChanges = false)

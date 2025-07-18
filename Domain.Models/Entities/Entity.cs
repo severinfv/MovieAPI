@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Models.Entities
+﻿namespace Domain.Models.Entities
 {
     public abstract class Entity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

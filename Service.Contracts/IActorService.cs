@@ -5,10 +5,10 @@ namespace Service.Contracts
 {
     public interface IActorService
     {
-        Task<bool> ActorExistsAsync(int id);
-        Task<ActorDto> GetActorAsync(int id, bool includeFilms = false, bool trackChanges = false);
+        Task<bool> ActorExistsAsync(Guid id);
+        Task<ActorDto> GetActorAsync(Guid id, bool includeFilms = false, bool trackChanges = false);
         Task<IEnumerable<ActorDto>> GetActorsAsync(ActorParameters parameters, bool trackChanges = false);
-        Task<IEnumerable<ActorDto>> GetActorsFromMovieAsync(int movieId, bool trackChanges = false);
+        Task<IEnumerable<ActorDto>> GetActorsFromMovieAsync(Guid movieId, bool trackChanges = false);
 
 
     }

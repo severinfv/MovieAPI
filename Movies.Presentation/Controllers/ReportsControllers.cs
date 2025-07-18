@@ -42,9 +42,9 @@ namespace Movies.Presentation.Controllers
         public async Task<ActionResult<IEnumerable<GenreAvgScore>>> GetTopGenres(int nr)
         {
             var topgenres = await _context.Movies
-                .SelectMany(m => m.Genres, (m, mg) => new { mg.MovieGenre, m.IMDBRating })
+                .SelectMany(m => m.Genres, (m, mg) => new { mg.MovieGenre, m.IMDB })
                 .GroupBy(g => g.MovieGenre)
-                .Select(ms => new GenreAvgScore { Genre = ms.Key, AvgRating = Math.Round(ms.Average(x => x.IMDBRating), 2) })
+                .Select(ms => new GenreAvgScore { Genre = ms.Key, AvgRating = Math.Round(ms.Average(x => x.IMDB), 2) })
                 .OrderByDescending(g => g.AvgRating).Take(nr).ToListAsync();
 
             return Ok(topgenres);
@@ -102,7 +102,7 @@ namespace Movies.Presentation.Controllers
                         Title = g.m.Title,
                         Year = g.m.Year.Year,
                         Runtime = g.m.Runtime,
-                        IMDBRating = g.m.IMDBRating
+                        IMDBRating = g.m.IMDB
                     })
                     .ToList()
                 })

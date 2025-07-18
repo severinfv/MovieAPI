@@ -20,7 +20,7 @@ namespace Movies.API
             builder.Services.AddSwaggerGen(opt => { opt.EnableAnnotations(); });
             builder.Services.AddRepositories();
             builder.Services.AddServiceLayer();
-
+            // builder.Services.AddHostedService();
             var app = builder.Build();
 
 

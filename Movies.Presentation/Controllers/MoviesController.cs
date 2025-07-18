@@ -44,7 +44,7 @@ namespace Movies.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<MovieDto>> GetMovie(int id) =>
+        public async Task<ActionResult<MovieDto>> GetMovie(Guid id) =>
              Ok((MovieDto?) await serviceManager.MovieService.GetMovieAsync(id));
         
 
@@ -53,7 +53,7 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Gets movie with details by id", Description = "Gets a detailed info of a movie by Id.")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MovieDetailsDto>> GetMovieWithDetails(int id, bool includeGenres, bool includeActors, bool includeReviews)
+        public async Task<ActionResult<MovieDetailsDto>> GetMovieWithDetails(Guid id, bool includeGenres, bool includeActors, bool includeReviews)
             => Ok((MovieDetailsDto?) await serviceManager.MovieService.GetMovieWithDetailsAsync(id, includeGenres, includeActors, includeReviews));
 
         
@@ -63,7 +63,7 @@ namespace Movies.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
-        public async Task<IActionResult> PutMovie(int id, [FromBody] MovieUpdateDto dto)
+        public async Task<IActionResult> PutMovie(Guid id, [FromBody] MovieUpdateDto dto)
         {
 
             await serviceManager.MovieService.UpdateMovieAsync(id, dto, trackChanges: true);
@@ -88,7 +88,7 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Delete a movie", Description = "Deletes a movie by ID.")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteMovie(int id)
+        public async Task<IActionResult> DeleteMovie(Guid id)
         {
             await serviceManager.MovieService.DeleteMovieAsync(id);
 

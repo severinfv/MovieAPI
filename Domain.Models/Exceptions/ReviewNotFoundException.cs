@@ -2,5 +2,5 @@
 
 public class ReviewNotFoundException : NotFoundException
 {
-    public ReviewNotFoundException(int id) : base($"Review with id {id} was not found") { }
+    public ReviewNotFoundException(Guid id) : base($"Review with id {id} was not found") { }
 }

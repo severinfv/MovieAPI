@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Movies.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using Movies.Infrastructure.Data;
 namespace Movies.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class MovieContextModelSnapshot : ModelSnapshot
+    [Migration("20250718143306_InitNewDb")]
+    partial class InitNewDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,31 +27,56 @@ namespace Movies.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entities.Actor", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Biography")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly?>("DateOfBirth")
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateOnly?>("Year")
-                        .HasColumnType("date");
 
                     b.HasKey("Id");
 
                     b.ToTable("Actors", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Models.Entities.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly>("DateRegistered")
+                        .HasColumnType("date");
+
+                    b.Property<Guid?>("ReviewId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApplicationUser", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Models.Entities.Director", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Biography")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -61,11 +89,9 @@ namespace Movies.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entities.Genre", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("MovieGenre")
                         .IsRequired()
@@ -78,16 +104,14 @@ namespace Movies.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entities.Movie", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("DirectorId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("DirectorId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("IMDBRating")
+                    b.Property<double>("IMDB")
                         .HasMaxLength(10)
                         .HasColumnType("float");
 
@@ -99,6 +123,9 @@ namespace Movies.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
+
+                    b.Property<double?>("UsersRating")
+                        .HasColumnType("float");
 
                     b.Property<DateOnly>("Year")
                         .HasColumnType("date");
@@ -112,14 +139,13 @@ namespace Movies.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entities.MovieActor", b =>
                 {
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("MovieId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ActorId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ActorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MovieId", "ActorId");
@@ -131,23 +157,17 @@ namespace Movies.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entities.MovieDetails", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Language")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MovieId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("MovieId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<double?>("Revenue")
                         .HasColumnType("float");
 
                     b.Property<string>("Synopsis")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -161,30 +181,28 @@ namespace Movies.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entities.Review", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
+                    b.Property<Guid?>("MovieId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ReviewAdded")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ReviewerName")
-                        .IsRequired()
+                    b.Property<string>("ReviewText")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("UserRating")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("MovieId");
 
@@ -193,11 +211,11 @@ namespace Movies.Infrastructure.Migrations
 
             modelBuilder.Entity("GenreMovie", b =>
                 {
-                    b.Property<int>("GenresId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("GenresId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("MoviesId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("MoviesId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("GenresId", "MoviesId");
 
@@ -248,10 +266,18 @@ namespace Movies.Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Entities.Review", b =>
                 {
+                    b.HasOne("Domain.Models.Entities.ApplicationUser", "ApplicationUser")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Models.Entities.Movie", "Movie")
                         .WithMany("Reviews")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("Movie");
                 });
@@ -274,6 +300,11 @@ namespace Movies.Infrastructure.Migrations
             modelBuilder.Entity("Domain.Models.Entities.Actor", b =>
                 {
                     b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("Domain.Models.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Domain.Models.Entities.Director", b =>

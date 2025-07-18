@@ -1,1 +1,1 @@
-﻿global using Movies.Infrastructure.Data;
+﻿//global using Movies.Infrastructure.Data;

@@ -4,6 +4,7 @@ using Domain.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Movies.Shared.DTOs.ReviewDTOs;
 using Service.Contracts;
+using System.Linq;
 
 namespace Movies.Services;
 
@@ -14,28 +15,28 @@ public class ReviewService : IReviewService
     {
         this.uow = uow;
     }
-    public async Task<bool> ReviewExistsAsync(int id) => await uow.ReviewRepository.ExistsAsync(id);
+    public async Task<bool> ReviewExistsAsync(Guid id) => await uow.ReviewRepository.ExistsAsync(id);
 
-    public async Task<ReviewDto> GetReviewAsync(int id, bool trackChanges = false)
+    public async Task<ReviewDto> GetReviewAsync(Guid id, bool trackChanges = false)
     {
         var review = await uow.ReviewRepository.GetByIdAsync(id, trackChanges);
         if (review == null) return null!;
 
-        var dto = new ReviewDto(review.UserName, review.Comment, review.Rating);
+        var dto = new ReviewDto(review.ApplicationUserId, review.ReviewText, review.UserRating);
         return dto;
     }
 
     public async Task<IEnumerable<ReviewDto>> GetReviewsAsync(bool trackChanges = false)
     {
         var reviews = await uow.ReviewRepository.GetAllAsync(trackChanges);
-        var dtos = reviews.Select(r => new ReviewDto(r.UserName, r.Comment, r.Rating));
+        var dtos = reviews.Select(r => new ReviewDto(r.ApplicationUserId, r.ReviewText, r.UserRating));
         return dtos;
     }
 
-    public async Task<IEnumerable<ReviewDto>> GetReviewsFromMovieAsync(int movieId, bool trackChanges = false)
+    public async Task<IEnumerable<ReviewDto>> GetReviewsFromMovieAsync(Guid movieId, bool trackChanges = false)
     {
         var reviews = await uow.ReviewRepository.GetReviewsByMovieIdAsync(movieId, trackChanges) ?? throw new MovieNotFoundException(movieId);
-        var dtos = reviews.Select(r => new ReviewDto(r.UserName, r.Comment, r.Rating));
+        var dtos = reviews.Select(r => new ReviewDto(r.ApplicationUserId, r.ReviewText, r.UserRating));
         return dtos;
     }
 

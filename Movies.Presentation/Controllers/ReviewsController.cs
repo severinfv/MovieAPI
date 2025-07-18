@@ -21,7 +21,7 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Get a review by Id", Description = "Get a review by Id")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewAsync(int reviewId, bool trackChanges)
+        public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewAsync(Guid reviewId, bool trackChanges)
         {
             var reviewDtos = await serviceManager.ReviewService.GetReviewAsync(reviewId, trackChanges);
             return Ok(reviewDtos);
@@ -32,7 +32,7 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Get review for a movie", Description = "Gets reviews by the MovieId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReviewDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewsFromMovieAsync(int movieId, bool trackChanges)
+        public async Task<ActionResult<IEnumerable<ReviewDto>>> GetReviewsFromMovieAsync(Guid movieId, bool trackChanges)
         {
             var reviewDtos = await serviceManager.ReviewService.GetReviewsFromMovieAsync(movieId, trackChanges);
             return Ok(reviewDtos);

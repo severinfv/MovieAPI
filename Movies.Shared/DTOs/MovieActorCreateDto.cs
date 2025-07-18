@@ -2,7 +2,7 @@
 {
     public class MovieActorCreateDto
     {
-        public int ActorId { get; set; }
+        public Guid ActorId { get; set; }
         public string Role { get; set; } = null!;
     }
 

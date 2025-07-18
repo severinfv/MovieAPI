@@ -17,6 +17,7 @@ namespace Movies.Infrastructure.Data
         public DbSet<Review> Reviews { get; set; } = default!;
         public DbSet<Director> Directors { get; set; } = default!;
         public DbSet<MovieActor> Roles { get; set; } = default!;
+        public DbSet<ApplicationUser> Users { get; set; } = default!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +26,7 @@ namespace Movies.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new MovieDetailsConfiguration());
             modelBuilder.ApplyConfiguration(new ActorConfiguration());
             modelBuilder.ApplyConfiguration(new MovieActorConfiguration());
+            modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
         }
     }
 }

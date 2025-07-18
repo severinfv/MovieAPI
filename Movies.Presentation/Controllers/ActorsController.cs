@@ -21,7 +21,7 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Get movie actor", Description = "Gets an actors by Id")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorAsync(int actorId, bool includeFilms, bool trackChanges)
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorAsync(Guid actorId, bool includeFilms, bool trackChanges)
             => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorAsync(actorId, includeFilms, trackChanges));
 
 
@@ -29,7 +29,7 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Get movie actors", Description = "Gets all actors by their MovieId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsFromMovieAsync(int movieId, bool trackChanges)
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsFromMovieAsync(Guid movieId, bool trackChanges)
             => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorsFromMovieAsync(movieId, trackChanges));
        
         [HttpGet]

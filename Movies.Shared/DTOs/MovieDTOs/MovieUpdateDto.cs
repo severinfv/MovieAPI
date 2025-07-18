@@ -5,6 +5,6 @@ namespace Movies.Shared.DTOs.MovieDTOs
     public class MovieUpdateDto : MovieManipulationDto
     {
         [Required]
-        public int Id { get; init; }
+        public Guid Id { get; init; }
     }
 }

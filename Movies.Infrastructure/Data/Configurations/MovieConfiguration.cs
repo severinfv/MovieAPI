@@ -19,7 +19,7 @@ namespace Movies.Infrastructure.Data.Configurations
                 .IsRequired()
                 .HasMaxLength(600);
 
-            builder.Property(c => c.IMDBRating)
+            builder.Property(c => c.IMDB)
                 .HasMaxLength(10);
 
             builder.HasMany(c => c.Genres)

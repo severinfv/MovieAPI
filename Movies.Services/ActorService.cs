@@ -17,9 +17,9 @@ public class ActorService : IActorService
     {
         this.uow = uow;
     }
-    public async Task<bool> ActorExistsAsync(int id) => await uow.ActorRepository.ExistsAsync(id);
+    public async Task<bool> ActorExistsAsync(Guid id) => await uow.ActorRepository.ExistsAsync(id);
 
-    public async Task<ActorDto> GetActorAsync(int id, bool includeFilms = false, bool trackChanges = false)
+    public async Task<ActorDto> GetActorAsync(Guid id, bool includeFilms = false, bool trackChanges = false)
     {
         var actor = await uow.ActorRepository.GetByIdAsync(id, trackChanges) ?? throw new ActorNotFoundException(id);
 
@@ -40,7 +40,7 @@ public class ActorService : IActorService
         return dtos;
     }
 
-    public async Task<IEnumerable<ActorDto>> GetActorsFromMovieAsync(int movieId, bool trackChanges = false)
+    public async Task<IEnumerable<ActorDto>> GetActorsFromMovieAsync(Guid movieId, bool trackChanges = false)
     {
         if (!await uow.MovieRepository.ExistsAsync(movieId))
             new MovieNotFoundException(movieId);

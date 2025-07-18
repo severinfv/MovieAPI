@@ -12,9 +12,9 @@ namespace Movies.Infrastructure.Repositories
     {
         public MovieRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<bool> ExistsAsync(int id) => await base.EntityExistsAsync(id);
-        public async Task<Movie?> GetByIdAsync(int id, bool trackChanges) => await GetEntityByIdAsync(id, trackChanges);
-        public async Task<Movie?> GetMovieWithDetailsAsync(int id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false)
+        public async Task<bool> ExistsAsync(Guid id) => await base.EntityExistsAsync(id);
+        public async Task<Movie?> GetByIdAsync(Guid id, bool trackChanges) => await GetEntityByIdAsync(id, trackChanges);
+        public async Task<Movie?> GetMovieWithDetailsAsync(Guid id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false)
         {
             IQueryable<Movie> query = FindByCondition(m => m.Id == id, trackChanges);
             query = query.Include(m => m.Director);

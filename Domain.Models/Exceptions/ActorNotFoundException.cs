@@ -2,5 +2,5 @@
 
 public class ActorNotFoundException : NotFoundException
 {
-    public ActorNotFoundException(int id) : base($"Actor with id {id} was not found") { }
+    public ActorNotFoundException(Guid id) : base($"Actor with id {id} was not found") { }
 }

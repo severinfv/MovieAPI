@@ -6,6 +6,7 @@ namespace Domain.Models.Entities
     public class Director : Entity
     {
         public string Name { get; set; } = null!;
+        public string Biography { get; set; } = null!;
         public ICollection<Movie> Movies { get; set; } = new List<Movie>();
     }
 }

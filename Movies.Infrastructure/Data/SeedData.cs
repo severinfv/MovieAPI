@@ -63,7 +63,7 @@ namespace Movies.Infrastructure.Data
                         Synopsis = record.Description.Trim(),
                         Revenue = revenue
                     },
-                    IMDBRating = record.Rating,
+                    IMDB = record.Rating,
                     Director = director,
                 };
 
