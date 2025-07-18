@@ -2,6 +2,7 @@
 
 namespace Movies.API.Extensions
 {
+    /* Old Data Seed
     public static class AppExtensions
     {
         public static async Task SeedDataAsync(this IApplicationBuilder app)
@@ -21,6 +22,5 @@ namespace Movies.API.Extensions
                     throw;
                 }
             }
-        }
-    }
+        }   */
 }

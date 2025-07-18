@@ -1,5 +1,5 @@
 ﻿using Domain.Contracts.Repositories;
-using Movies.Infrastructure.Data;
+using Movies.Infrastructure.Context;
 
 namespace Movies.Infrastructure.Repositories;
 

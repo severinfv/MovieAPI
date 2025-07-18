@@ -1,4 +1,4 @@
 ﻿namespace Movies.Shared.DTOs.ReviewDTOs
 {
-    public record ReviewDto(Guid ApplicationUserId, string ReviewText, double UserRating);
+    public record ReviewDto(Guid ApplicationUserId, string? ReviewText, double? UserRating);
 }

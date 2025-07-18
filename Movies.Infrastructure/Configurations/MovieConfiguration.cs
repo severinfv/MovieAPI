@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Movies.Infrastructure.Data.Configurations
+namespace Movies.Infrastructure.Configurations
 {
     public class MovieConfiguration : IEntityTypeConfiguration<Movie>
     {

@@ -4,11 +4,11 @@
     {
         public DateTime ReviewAdded { get; set; }
         public string? ReviewText { get; set; } = null!;
-        public double UserRating { get; set; }
-        public Guid? MovieId { get; set; }
-        public Movie? Movie { get; set; }
+        public double? UserRating { get; set; }
+        public Guid MovieId { get; set; }
+        public Movie Movie { get; set; } = null!;
         public Guid ApplicationUserId { get; set; }
-        public ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser ApplicationUser { get; set; } = null!;
 
     }
 }

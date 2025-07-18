@@ -1,7 +1,7 @@
 ﻿using Domain.Contracts.Repositories;
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using Movies.Infrastructure.Data;
+using Movies.Infrastructure.Context;
 using Movies.Shared.DTOs;
 using Movies.Shared.Parameters;
 using System.Threading.Tasks;

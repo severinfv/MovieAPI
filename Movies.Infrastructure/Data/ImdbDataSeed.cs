@@ -1,21 +1,22 @@
 ﻿using CsvHelper;
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using Movies.Infrastructure.Context;
 using Movies.Infrastructure.Data.raw;
 using System.Globalization;
 
 namespace Movies.Infrastructure.Data
 {
-    public class SeedData
+    public class ImdbDataSeed
     {
-        internal static async Task InitAsync(ApplicationDbContext context)
+        public static async Task InitAsync(ApplicationDbContext context)
         {
             Console.WriteLine("SeedData: Starting...");
             if (await context.Movies.AnyAsync())
             {
                 //await context.Database.EnsureDeletedAsync();
                 //await context.Database.EnsureCreatedAsync();
-                //await InitAsync(context);
+                await InitAsync(context);
                 Console.WriteLine("SeedData: Skip.");
                 return;
             }
@@ -31,13 +32,13 @@ namespace Movies.Infrastructure.Data
         {
             var movies = new List<Movie>();
 
-            //to avoid duplicates
             var genreCheck = new Dictionary<string, Genre>(StringComparer.OrdinalIgnoreCase);
             var actorCheck = new Dictionary<string, Actor>(StringComparer.OrdinalIgnoreCase);
             var directorCheck = new Dictionary<string, Director>(StringComparer.OrdinalIgnoreCase);
 
-            using var reader = new StreamReader("Data/raw/raw.csv");
+            using var reader = new StreamReader("../Movies.Infrastructure/Data/RawData/imdb.csv");
             using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+
             var records = csv.GetRecords<CsvRecord>();
 
             foreach (var record in records)

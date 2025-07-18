@@ -1,7 +1,8 @@
 ﻿using Domain.Contracts.Repositories;
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using Movies.Infrastructure.Data;
+using Movies.Infrastructure.Context;
+
 namespace Movies.Infrastructure.Repositories;
 
 public class ReviewRepository : RepositoryBase<Review>, IReviewRepository

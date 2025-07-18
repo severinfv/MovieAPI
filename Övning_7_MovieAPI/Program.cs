@@ -7,20 +7,19 @@ namespace Movies.API
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.ConfigureSql(builder.Configuration);
 
-            // Add services to the container.
-
-            builder.Services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
-                .AddApplicationPart(typeof(AssemblyReference).Assembly);
+            builder.Services.ConfigureControllers();
 
             builder.Services.AddSwaggerGen(opt => { opt.EnableAnnotations(); });
             builder.Services.AddRepositories();
             builder.Services.AddServiceLayer();
-            // builder.Services.AddHostedService();
+
+            builder.Services.AddHostedService<DataSeedHostingService>();
+
             var app = builder.Build();
 
 
@@ -36,7 +35,6 @@ namespace Movies.API
                 {
                     opt.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 });
-                await app.SeedDataAsync();
             }
 
             app.UseHttpsRedirection();

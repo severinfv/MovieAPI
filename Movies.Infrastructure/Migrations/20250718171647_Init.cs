@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Movies.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitNewDb : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,7 @@ namespace Movies.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Biography = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Biography = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: true)
                 },
                 constraints: table =>
@@ -45,7 +45,7 @@ namespace Movies.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Biography = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Biography = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -141,6 +141,7 @@ namespace Movies.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Synopsis = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Budget = table.Column<double>(type: "float", nullable: true),
                     Revenue = table.Column<double>(type: "float", nullable: true),
                     MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -162,8 +163,8 @@ namespace Movies.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReviewAdded = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ReviewText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserRating = table.Column<double>(type: "float", nullable: false),
-                    MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    UserRating = table.Column<double>(type: "float", nullable: true),
+                    MovieId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ApplicationUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>

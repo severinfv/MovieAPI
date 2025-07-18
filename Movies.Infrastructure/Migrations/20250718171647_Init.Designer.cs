@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Movies.Infrastructure.Data;
+using Movies.Infrastructure.Context;
 
 #nullable disable
 
 namespace Movies.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250718143306_InitNewDb")]
-    partial class InitNewDb
+    [Migration("20250718171647_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,6 @@ namespace Movies.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Biography")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly?>("DateOfBirth")
@@ -75,7 +74,6 @@ namespace Movies.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Biography")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -161,6 +159,9 @@ namespace Movies.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double?>("Budget")
+                        .HasColumnType("float");
+
                     b.Property<Guid?>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
@@ -188,7 +189,7 @@ namespace Movies.Infrastructure.Migrations
                     b.Property<Guid>("ApplicationUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("MovieId")
+                    b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ReviewAdded")
@@ -197,7 +198,7 @@ namespace Movies.Infrastructure.Migrations
                     b.Property<string>("ReviewText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("UserRating")
+                    b.Property<double?>("UserRating")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
@@ -275,7 +276,8 @@ namespace Movies.Infrastructure.Migrations
                     b.HasOne("Domain.Models.Entities.Movie", "Movie")
                         .WithMany("Reviews")
                         .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ApplicationUser");
 

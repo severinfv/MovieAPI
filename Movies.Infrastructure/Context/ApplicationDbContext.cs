@@ -1,8 +1,8 @@
 ﻿using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using Movies.Infrastructure.Data.Configurations;
+using Movies.Infrastructure.Configurations;
 
-namespace Movies.Infrastructure.Data
+namespace Movies.Infrastructure.Context
 {
     public class ApplicationDbContext : DbContext
     {

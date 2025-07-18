@@ -1,13 +1,21 @@
 ﻿using Domain.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Movies.Infrastructure.Context;
 using Movies.Infrastructure.Repositories;
+using Movies.Presentation;
 using Movies.Services;
 using Service.Contracts;
 
 namespace Movies.API.Extensions
 {
-    public static class ServiceExtension
+    public static class ServiceExtensions
     {
+        public static void ConfigureControllers(this IServiceCollection services)
+        {
+            services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
+                .AddApplicationPart(typeof(AssemblyReference).Assembly);
+        }
+
         public static void ConfigureSql(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
