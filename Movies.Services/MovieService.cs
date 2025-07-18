@@ -59,7 +59,7 @@ namespace Movies.Services
             return dto;
         }
 
-        public async Task<PagedList<MovieDto>> GetMoviesAsync(EntityParameters parameters, bool trackChanges = false)
+        public async Task<PagedList<MovieDto>> GetMoviesAsync(MovieParameters parameters, bool trackChanges = false)
         {
             var movies = await uow.MovieRepository.GetAllAsync(parameters, trackChanges);
             var dtos = movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).ToList();

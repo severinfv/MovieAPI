@@ -18,6 +18,15 @@ public class EntityParameters
 }
 
 public class MovieParameters : EntityParameters
-{ }
+{
+    public MovieParameters()
+    {
+        PageNumber = 2;
+        PageSize = 15;
+    }
+}
+public class ActorParameters : EntityParameters
+{
+}
 
 

@@ -26,7 +26,7 @@ namespace Movies.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<MovieDto>))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies([FromQuery] EntityParameters parameters)
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies([FromQuery] MovieParameters parameters)
 
         {
             var movies = await serviceManager.MovieService.GetMoviesAsync(parameters);
@@ -36,14 +36,7 @@ namespace Movies.Presentation.Controllers
 
             return Ok((IEnumerable<MovieDto>)await serviceManager.MovieService.GetMoviesAsync(parameters));
         }
-       
 
-
-        
-        //var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
-
-        //
-        // }
 
         // GET: api/Movies/5
         [HttpGet("{id:int}")]
