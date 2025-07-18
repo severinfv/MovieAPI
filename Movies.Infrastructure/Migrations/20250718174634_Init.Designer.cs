@@ -12,7 +12,7 @@ using Movies.Infrastructure.Context;
 namespace Movies.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250718171647_Init")]
+    [Migration("20250718174634_Init")]
     partial class Init
     {
         /// <inheritdoc />
