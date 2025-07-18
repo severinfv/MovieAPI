@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Movies.Shared.DTOs;
+using Movies.Shared.DTOs.MovieDTOs;
 using Movies.Shared.Parameters;
 using Service.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
@@ -13,7 +14,6 @@ namespace Movies.Presentation.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly IServiceManager serviceManager;
-        const int maxMoviesPageSize = 10;
 
         public MoviesController(IServiceManager serviceManager)
         {
@@ -76,7 +76,7 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Create a movie.", Description = "Creates a new movie.")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MovieDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<MovieDto>> PostMovie([FromBody] MovieCreateDto dto)
+        public async Task<ActionResult<MovieDto>> PostMovie([FromBody] MovieManipulationDto dto)
         {
             var movieDto = await serviceManager.MovieService.AddMovieAsync(dto);
 

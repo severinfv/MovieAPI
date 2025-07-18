@@ -1,4 +1,5 @@
-﻿using Movies.Shared.DTOs;
+﻿using Movies.Shared.DTOs.ActorDTOs;
+using Movies.Shared.Parameters;
 
 namespace Service.Contracts
 {
@@ -6,7 +7,7 @@ namespace Service.Contracts
     {
         Task<bool> ActorExistsAsync(int id);
         Task<ActorDto> GetActorAsync(int id, bool includeFilms = false, bool trackChanges = false);
-        Task<IEnumerable<ActorDto>> GetActorsAsync(string? name, string? query, bool trackChanges = false);
+        Task<IEnumerable<ActorDto>> GetActorsAsync(ActorParameters parameters, bool trackChanges = false);
         Task<IEnumerable<ActorDto>> GetActorsFromMovieAsync(int movieId, bool trackChanges = false);
 
 

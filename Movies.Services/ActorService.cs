@@ -2,7 +2,9 @@
 using Domain.Models.Entities;
 using Domain.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Movies.Shared.DTOs;
+using Movies.Shared.DTOs.ActorDTOs;
+using Movies.Shared.DTOs.MovieDTOs;
+using Movies.Shared.Parameters;
 using Service.Contracts;
 using System.Linq;
 
@@ -30,16 +32,10 @@ public class ActorService : IActorService
         return dto;
     }
 
-    public async Task<IEnumerable<ActorDto>> GetActorsAsync(string? fullname, string? query, bool trackChanges = false)
+    public async Task<IEnumerable<ActorDto>> GetActorsAsync(ActorParameters parameters, bool trackChanges = false)
     {
-        var a = uow.ActorRepository.GetAllForSearchAsync(trackChanges);
-        if (!string.IsNullOrWhiteSpace(fullname))
-            a = a.Where(a => a.Name == fullname);
-        if (!string.IsNullOrWhiteSpace(query))
-            a = a.Where(a => a.Name.Contains(query));
-
-        var actors = await a.ToListAsync();
-
+        var actors = await uow.ActorRepository.GetAllAsync(parameters, trackChanges);
+        
         var dtos = actors.Select(a => new ActorDto { Name = a.Name });
         return dtos;
     }

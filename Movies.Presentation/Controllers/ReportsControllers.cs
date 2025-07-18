@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Movies.Infrastructure.Data;
 using Movies.Shared.DTOs;
+using Movies.Shared.DTOs.MovieDTOs;
 using Movies.Shared.DTOs.Reports;
 using Swashbuckle.AspNetCore.Annotations;
 

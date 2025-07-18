@@ -1,10 +1,13 @@
-﻿using Domain.Contracts.Repositories;
+﻿using Service.Contracts;
+using Domain.Contracts.Repositories;
 using Domain.Models.Entities;
 using Domain.Models.Exceptions;
 using Movies.Shared.DTOs;
+using Movies.Shared.DTOs.ActorDTOs;
+using Movies.Shared.DTOs.MovieDTOs;
+using Movies.Shared.DTOs.ReviewDTOs;
 using Movies.Shared.Parameters;
-using Service.Contracts;
-using System.ComponentModel.DataAnnotations;
+
 
 namespace Movies.Services
 {
@@ -65,16 +68,13 @@ namespace Movies.Services
             var dtos = movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).ToList();
 
             return new PagedList<MovieDto>(
-                dtos,
-                movies.TotalCount,
-                movies.CurrentPage,
-                movies.PageSize
-                );
+            dtos,
+            movies.TotalCount,
+            movies.CurrentPage,
+            movies.PageSize);
         }
 
-     
-            
-        public async Task<MovieDto> AddMovieAsync(MovieCreateDto dto, bool trackChanges = false)
+        public async Task<MovieDto> AddMovieAsync(MovieManipulationDto dto, bool trackChanges = false)
         {
             ValidateDto(dto);
 
@@ -102,10 +102,10 @@ namespace Movies.Services
             return movieDto;
         }
 
-        public async Task UpdateMovieAsync(int id, MovieUpdateDto dto, bool trackChanges=true)
+        public async Task UpdateMovieAsync(int id, MovieUpdateDto dto, bool trackChanges = true)
         {
             var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges) ?? throw new MovieNotFoundException(id);
-            
+
             movie.Title = dto.Title;
             movie.Year = dto.Year;
             movie.Runtime = dto.Runtime;
@@ -124,7 +124,7 @@ namespace Movies.Services
             await uow.CompleteAsync();
         }
 
-        public void ValidateDto(MovieCreateDto dto)
+        public void ValidateDto(MovieManipulationDto dto)
         {
             var errors = new List<string>();
 

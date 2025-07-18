@@ -1,4 +1,6 @@
-﻿namespace Movies.Shared.DTOs.Reports
+﻿using Movies.Shared.DTOs.MovieDTOs;
+
+namespace Movies.Shared.DTOs.Reports
 {
     public class CollaborationsDto
     {

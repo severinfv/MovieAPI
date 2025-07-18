@@ -29,7 +29,7 @@ namespace Movies.Infrastructure.Repositories
             => await FindByCondition(e => e.Id == id, trackChanges).FirstOrDefaultAsync();
 
         public async Task<PagedList<T>> GetAllAsync(EntityParameters parameters, bool trackChanges = false)
-            => await PagedList<T>.PageAsync(FindAll(trackChanges), parameters.PageNumber, parameters.PageSize);
+           => await PagedList<T>.PageAsync(FindAll(trackChanges), parameters.PageNumber, parameters.PageSize);
 
         public void Create(T entity) => DbSet.Add(entity);
 

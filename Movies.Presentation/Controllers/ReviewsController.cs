@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Movies.Shared.DTOs;
+using Movies.Shared.DTOs.ReviewDTOs;
 using Service.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 

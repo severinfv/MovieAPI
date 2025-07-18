@@ -1,4 +1,4 @@
-﻿namespace Movies.Shared.DTOs
+﻿namespace Movies.Shared.DTOs.MovieDTOs
 {
     public class MovieDto
     {

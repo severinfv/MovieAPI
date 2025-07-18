@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Movies.Shared.DTOs;
+using Movies.Shared.DTOs.ActorDTOs;
+using Movies.Shared.Parameters;
 using Service.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -35,8 +36,8 @@ namespace Movies.Presentation.Controllers
         [SwaggerOperation(Summary = "Get all or filtered Actors", Description = "Gets all actors, or filter by name or search query.")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsAsync([FromQuery] string? fullname, [FromQuery] string? query, bool trackChanges)
-            => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorsAsync(fullname, query, trackChanges));
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsAsync([FromQuery] ActorParameters parameters, bool trackChanges)
+            => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorsAsync(parameters, trackChanges));
 
 /*
 

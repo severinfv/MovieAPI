@@ -14,9 +14,6 @@ namespace Movies.Infrastructure.Repositories
 
         public async Task<bool> ExistsAsync(int id) => await base.EntityExistsAsync(id);
         public async Task<Movie?> GetByIdAsync(int id, bool trackChanges) => await GetEntityByIdAsync(id, trackChanges);
-       // public async Task<PagedList<Movie>> GetAllAsync(MovieParameters parameters, bool trackChanges = false)
-        //    => await PagedList<Movie>.PageAsync(FindAll(trackChanges), parameters.PageNumber, parameters.PageSize);
-
         public async Task<Movie?> GetMovieWithDetailsAsync(int id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false)
         {
             IQueryable<Movie> query = FindByCondition(m => m.Id == id, trackChanges);
@@ -27,6 +24,20 @@ namespace Movies.Infrastructure.Repositories
 
             return await query.FirstOrDefaultAsync();
         }
-        
+
+        public async Task<PagedList<Movie>> GetAllAsync(MovieParameters parameters, bool trackChanges = false)
+        {
+            var query = FindAll(trackChanges);
+
+            if (!string.IsNullOrWhiteSpace(parameters.Title))
+                query = query.Where(m => m.Title == parameters.Title.Trim());
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchQuery)) //ToDo: Add Searching 
+                query = query.Where(m =>
+                    m.Title.Contains(parameters.SearchQuery.Trim()));
+
+            return await PagedList<Movie>.PageAsync(query, parameters.PageNumber, parameters.PageSize);
+        }
+
     }
 }

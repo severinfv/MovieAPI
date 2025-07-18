@@ -45,6 +45,16 @@ public static class ExceptionExtensions
                                 instance: context.Request.Path);
                             break;
 
+                        case BusinessRuleException businessRuleException:
+                            statusCode = StatusCodes.Status422UnprocessableEntity;
+                            problemDetails = problemDetailsFactory.CreateProblemDetails(
+                                context,
+                                statusCode,
+                                title: businessRuleException.Title,
+                                detail: businessRuleException.Message,
+                                instance: context.Request.Path);
+                            break;
+
                         default:
                             statusCode = StatusCodes.Status500InternalServerError;
                             problemDetails = problemDetailsFactory.CreateProblemDetails(

@@ -2,7 +2,7 @@
 using Domain.Models.Entities;
 using Domain.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Movies.Shared.DTOs;
+using Movies.Shared.DTOs.ReviewDTOs;
 using Service.Contracts;
 
 namespace Movies.Services;

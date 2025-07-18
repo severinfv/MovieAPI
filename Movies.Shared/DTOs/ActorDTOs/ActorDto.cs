@@ -1,4 +1,6 @@
-﻿namespace Movies.Shared.DTOs
+﻿using Movies.Shared.DTOs.MovieDTOs;
+
+namespace Movies.Shared.DTOs.ActorDTOs
 {
     public class ActorDto
     {
