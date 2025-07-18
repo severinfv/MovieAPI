@@ -2,6 +2,7 @@
 using Domain.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Movies.Infrastructure.Data;
+using Movies.Shared.Parameters;
 using System.Linq.Expressions;
 
 namespace Movies.Infrastructure.Repositories
@@ -25,9 +26,10 @@ namespace Movies.Infrastructure.Repositories
         public async Task<bool> EntityExistsAsync(int id) => await DbSet.AnyAsync(m => m.Id == id);
 
         public async Task<T?> GetEntityByIdAsync(int id, bool trackChanges = false)
-        {
-            return await FindByCondition(e => e.Id == id, trackChanges).FirstOrDefaultAsync();
-        }
+            => await FindByCondition(e => e.Id == id, trackChanges).FirstOrDefaultAsync();
+
+        public async Task<PagedList<T>> GetAllAsync(EntityParameters parameters, bool trackChanges = false)
+            => await PagedList<T>.PageAsync(FindAll(trackChanges), parameters.PageNumber, parameters.PageSize);
 
         public void Create(T entity) => DbSet.Add(entity);
 

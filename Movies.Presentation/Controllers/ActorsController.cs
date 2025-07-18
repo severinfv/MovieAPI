@@ -21,51 +21,24 @@ namespace Movies.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorAsync(int actorId, bool includeFilms, bool trackChanges)
-        {
-            var actorDtos = await serviceManager.ActorService.GetActorAsync(actorId, includeFilms, trackChanges);
-            return Ok(actorDtos);
+            => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorAsync(actorId, includeFilms, trackChanges));
 
-        }
 
         [HttpGet("movie/{movieId:int}")]
         [SwaggerOperation(Summary = "Get movie actors", Description = "Gets all actors by their MovieId")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsFromMovieAsync(int movieId, bool trackChanges)
-        {
-            var actorDtos = await serviceManager.ActorService.GetActorsFromMovieAsync(movieId, trackChanges);
-            return Ok(actorDtos);
-
-        }
-
+            => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorsFromMovieAsync(movieId, trackChanges));
+       
         [HttpGet]
-        [SwaggerOperation(Summary = "Get all actors", Description = "Gets a list of all actors")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsAsync()
-            => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorsAsync());
-
-
-
-        /*
-        [HttpGet]  // ToDo: trim and nulls
         [SwaggerOperation(Summary = "Get all or filtered Actors", Description = "Gets all actors, or filter by name or search query.")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
-        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActors([FromQuery] string? name, [FromQuery] string? searchquery)
-        {
-            var collection = _context.Actors as IQueryable<Actor>;
-            if (!string.IsNullOrWhiteSpace(name))
-                collection = collection?.Where(a => a.Name == name);
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsAsync([FromQuery] string? fullname, [FromQuery] string? query, bool trackChanges)
+            => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorsAsync(fullname, query, trackChanges));
 
-            if (!string.IsNullOrWhiteSpace(searchquery))
-                collection = collection?.Where(a => a.Name.Contains(searchquery));
-
-            var act = await collection.ToListAsync();
-
-            var res = act.Select(a => new ActorDto(a.Name));
-            return Ok(res);
-        }
-
+/*
 
         // POST: api/movies/")
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Models.Exceptions;
-public class BadRequestException : Exception
+public class NotFoundException : Exception
 {
     public string Title { get; }
-    public BadRequestException(string message, string title = "Bad Request") : base(message)
+    public NotFoundException(string message, string title = "Not Found") : base(message)
     {
         Title = title;
     }

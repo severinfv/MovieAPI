@@ -1,8 +1,10 @@
 ﻿using Domain.Contracts.Repositories;
 using Domain.Models.Entities;
+using Domain.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Movies.Shared.DTOs;
 using Service.Contracts;
+using System.Linq;
 
 namespace Movies.Services;
 
@@ -17,8 +19,7 @@ public class ActorService : IActorService
 
     public async Task<ActorDto> GetActorAsync(int id, bool includeFilms = false, bool trackChanges = false)
     {
-        var actor = await uow.ActorRepository.GetByIdAsync(id, trackChanges);
-        if (actor == null) return null!;
+        var actor = await uow.ActorRepository.GetByIdAsync(id, trackChanges) ?? throw new ActorNotFoundException(id);
 
         var dto = new ActorDto {
             Name = actor.Name,
@@ -29,17 +30,29 @@ public class ActorService : IActorService
         return dto;
     }
 
-    public async Task<IEnumerable<ActorDto>> GetActorsAsync(bool trackChanges = false)
+    public async Task<IEnumerable<ActorDto>> GetActorsAsync(string? fullname, string? query, bool trackChanges = false)
     {
-        var actors = await uow.ActorRepository.GetAllAsync(trackChanges);
+        var a = uow.ActorRepository.GetAllForSearchAsync(trackChanges);
+        if (!string.IsNullOrWhiteSpace(fullname))
+            a = a.Where(a => a.Name == fullname);
+        if (!string.IsNullOrWhiteSpace(query))
+            a = a.Where(a => a.Name.Contains(query));
+
+        var actors = await a.ToListAsync();
+
         var dtos = actors.Select(a => new ActorDto { Name = a.Name });
         return dtos;
     }
 
     public async Task<IEnumerable<ActorDto>> GetActorsFromMovieAsync(int movieId, bool trackChanges = false)
     {
+        if (!await uow.MovieRepository.ExistsAsync(movieId))
+            new MovieNotFoundException(movieId);
+
         var actors = await uow.ActorRepository.GetActorsByMovieIdAsync(movieId, trackChanges);
+        
         var dtos = actors.Select(a => new ActorDto { Name = a.Name });
+
         return dtos;
     }
 

@@ -2,7 +2,9 @@
 using Domain.Models.Entities;
 using Domain.Models.Exceptions;
 using Movies.Shared.DTOs;
+using Movies.Shared.Parameters;
 using Service.Contracts;
+using System.ComponentModel.DataAnnotations;
 
 namespace Movies.Services
 {
@@ -16,23 +18,24 @@ namespace Movies.Services
         public async Task<bool> MovieExistsAsync(int id) => await uow.MovieRepository.ExistsAsync(id);
         public async Task<MovieDto> GetMovieAsync(int id, bool trackChanges = false)
         {
-            
+
             var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges) ?? throw new MovieNotFoundException(id);
 
-            var dto = new MovieDto 
+            var dto = new MovieDto
             {
-                Id = movie.Id, 
-                Title = movie.Title, 
-                Year = movie.Year.Year, 
-                Runtime = movie.Runtime, 
-                IMDBRating = movie.IMDBRating 
+                Id = movie.Id,
+                Title = movie.Title,
+                Year = movie.Year.Year,
+                Runtime = movie.Runtime,
+                IMDBRating = movie.IMDBRating
             };
 
             return dto;
         }
-        public async Task<MovieDetailsDto> GetMovieWithDetailsAsync (int id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false) 
+        public async Task<MovieDetailsDto> GetMovieWithDetailsAsync(int id, bool includeGenres, bool includeActors, bool includeReviews, bool trackChanges = false)
         {
-            var movie = await uow.MovieRepository.GetMovieWithDetailsAsync(id, includeGenres, includeActors, includeReviews, trackChanges) ?? throw new MovieNotFoundException(id);
+            var movie = await uow.MovieRepository.GetMovieWithDetailsAsync(id, includeGenres, includeActors, includeReviews, trackChanges)
+                ?? throw new MovieNotFoundException(id);
 
             var dto = new MovieDetailsDto
             {
@@ -56,15 +59,25 @@ namespace Movies.Services
             return dto;
         }
 
-        public async Task<IEnumerable<MovieDto>> GetMoviesAsync(bool trackChanges = false)
+        public async Task<PagedList<MovieDto>> GetMoviesAsync(EntityParameters parameters, bool trackChanges = false)
         {
-            var movies = await uow.MovieRepository.GetAllAsync(trackChanges);
-            var dtos = movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating });
-            return dtos;
+            var movies = await uow.MovieRepository.GetAllAsync(parameters, trackChanges);
+            var dtos = movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year.Year, Runtime = m.Runtime, IMDBRating = m.IMDBRating }).ToList();
+
+            return new PagedList<MovieDto>(
+                dtos,
+                movies.TotalCount,
+                movies.CurrentPage,
+                movies.PageSize
+                );
         }
 
+     
+            
         public async Task<MovieDto> AddMovieAsync(MovieCreateDto dto, bool trackChanges = false)
         {
+            ValidateDto(dto);
+
             var movie = new Movie
             {
                 Title = dto.Title,
@@ -72,7 +85,7 @@ namespace Movies.Services
                 Runtime = dto.Runtime,
                 IMDBRating = dto.IMDBRating,
             };
-            movie.DirectorId = 1; //ToDo
+            movie.DirectorId = dto.DirectorId;
 
             uow.MovieRepository.Create(movie);
             await uow.CompleteAsync();
@@ -91,13 +104,8 @@ namespace Movies.Services
 
         public async Task UpdateMovieAsync(int id, MovieUpdateDto dto, bool trackChanges=true)
         {
-
-            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges);
-            if (movie is null)
-            {
-                throw new KeyNotFoundException($"Movie with id {id} not found");
-            }
-
+            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges) ?? throw new MovieNotFoundException(id);
+            
             movie.Title = dto.Title;
             movie.Year = dto.Year;
             movie.Runtime = dto.Runtime;
@@ -109,12 +117,34 @@ namespace Movies.Services
 
         public async Task DeleteMovieAsync(int id, bool trackChanges = false)
         {
-            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges);
+            var movie = await uow.MovieRepository.GetByIdAsync(id, trackChanges) ?? throw new MovieNotFoundException(id);
 
-            if (movie != null)
-                uow.MovieRepository.Delete(movie);
+            uow.MovieRepository.Delete(movie);
 
             await uow.CompleteAsync();
+        }
+
+        public void ValidateDto(MovieCreateDto dto)
+        {
+            var errors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(dto.Title))
+                errors.Add("Title, ");
+
+            if (dto.Year == new DateOnly(0001, 01, 01))
+                errors.Add("Year, ");
+
+            if (dto.Runtime == 0)
+                errors.Add("Runtime, ");
+
+            if (dto.IMDBRating == 0)
+                errors.Add("IMDB rating, ");
+
+            if (dto.DirectorId == 0)
+                errors.Add("DirectorId.");
+
+            if (errors.Any())
+                throw new DtoBadRequestException(string.Join(" ", errors));
         }
 
         public async void SaveChangesAsync()

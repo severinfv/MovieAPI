@@ -1,5 +1,6 @@
 ﻿using Domain.Contracts.Repositories;
 using Domain.Models.Entities;
+using Domain.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Movies.Shared.DTOs;
 using Service.Contracts;
@@ -33,7 +34,7 @@ public class ReviewService : IReviewService
 
     public async Task<IEnumerable<ReviewDto>> GetReviewsFromMovieAsync(int movieId, bool trackChanges = false)
     {
-        var reviews = await uow.ReviewRepository.GetReviewsByMovieIdAsync(movieId, trackChanges);
+        var reviews = await uow.ReviewRepository.GetReviewsByMovieIdAsync(movieId, trackChanges) ?? throw new MovieNotFoundException(movieId);
         var dtos = reviews.Select(r => new ReviewDto(r.UserName, r.Comment, r.Rating));
         return dtos;
     }

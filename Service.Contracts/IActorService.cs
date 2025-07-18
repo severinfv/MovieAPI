@@ -6,7 +6,7 @@ namespace Service.Contracts
     {
         Task<bool> ActorExistsAsync(int id);
         Task<ActorDto> GetActorAsync(int id, bool includeFilms = false, bool trackChanges = false);
-        Task<IEnumerable<ActorDto>> GetActorsAsync(bool trackChanges = false);
+        Task<IEnumerable<ActorDto>> GetActorsAsync(string? name, string? query, bool trackChanges = false);
         Task<IEnumerable<ActorDto>> GetActorsFromMovieAsync(int movieId, bool trackChanges = false);
 
 

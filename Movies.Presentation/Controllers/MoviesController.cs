@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Movies.Shared.DTOs;
+using Movies.Shared.Parameters;
 using Service.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Text.Json;
 
 namespace Movies.Presentation.Controllers
 {
@@ -24,21 +26,24 @@ namespace Movies.Presentation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<MovieDto>))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies() 
-            => Ok((IEnumerable<MovieDto>)await serviceManager.MovieService.GetMoviesAsync());
-        //{
-        // if (pageSize > maxMoviesPageSize)
-        // {
-        //     pageSize = maxMoviesPageSize;
-        // }
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies([FromQuery] EntityParameters parameters)
 
-        //.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToList();
+        {
+            var movies = await serviceManager.MovieService.GetMoviesAsync(parameters);
+            var paginationMetadata = new { movies.TotalCount, movies.CurrentPage, movies.PageSize, movies.TotalPages };
 
-        //var totalItemCount = dtos.Count();
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+            return Ok((IEnumerable<MovieDto>)await serviceManager.MovieService.GetMoviesAsync(parameters));
+        }
+       
+
+
+        
         //var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
 
-        //Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
-       // }
+        //
+        // }
 
         // GET: api/Movies/5
         [HttpGet("{id:int}")]
@@ -70,13 +75,9 @@ namespace Movies.Presentation.Controllers
 
             await serviceManager.MovieService.UpdateMovieAsync(id, dto, trackChanges: true);
 
-            //if (movie is null) return NotFound();
-
             return NoContent();
         }
         
-
-
         // POST: api/Movies
         [HttpPost]
         [SwaggerOperation(Summary = "Create a movie.", Description = "Creates a new movie.")]

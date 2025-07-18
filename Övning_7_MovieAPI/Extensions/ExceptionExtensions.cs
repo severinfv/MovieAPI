@@ -25,13 +25,23 @@ public static class ExceptionExtensions
                     switch (contextFeature.Error)
                     {
 
-                        case MovieNotFoundException companyNotFoundException:
+                        case MovieNotFoundException movieNotFoundException:
                             statusCode = StatusCodes.Status404NotFound;
                             problemDetails = problemDetailsFactory.CreateProblemDetails(
                                 context,
                                 statusCode,
-                                title: companyNotFoundException.Title,
-                                detail: companyNotFoundException.Message,
+                                title: movieNotFoundException.Title,
+                                detail: movieNotFoundException.Message,
+                                instance: context.Request.Path);
+                            break;
+
+                        case DtoBadRequestException dtoBadRequestException:
+                            statusCode = StatusCodes.Status400BadRequest;
+                            problemDetails = problemDetailsFactory.CreateProblemDetails(
+                                context,
+                                statusCode,
+                                title: dtoBadRequestException.Title,
+                                detail: dtoBadRequestException.Message,
                                 instance: context.Request.Path);
                             break;
 
