@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Movies.Shared.DTOs.ReviewDTOs;
-using Service.Contracts;
+using Movies.Core.DTOs.ReviewDTOs;
+using Movies.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Movies.Presentation.Controllers
@@ -73,18 +73,7 @@ namespace Movies.Presentation.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        [SwaggerOperation(Summary = "Get a specific review by ID")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Review>> GetReviewById(int id)
-        {
-            var review = await _context.Reviews.FindAsync(id);
-            if (review == null)
-                return NotFound();
-
-            return Ok(review);
-        }
+       
 
         [HttpPost]
         [SwaggerOperation(Summary = "Add a new review", Description = "Creates a new review for an optional movie.")]

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Movies.Infrastructure.Context;
-using Movies.Shared.DTOs;
-using Movies.Shared.DTOs.MovieDTOs;
-using Movies.Shared.DTOs.Reports;
+using Movies.Contracts;
+using Movies.Core.DTOs.MovieDTOs;
+using Movies.Core.DTOs.ReportsDTOs;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Movies.Presentation.Controllers
@@ -12,15 +11,14 @@ namespace Movies.Presentation.Controllers
     [Route("api/reports")]
     [ApiController]
     [Produces("application/json")]
-    public class ReportsControllers : ControllerBase
+    public class ReportsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public ReportsControllers(ApplicationDbContext context)
+        public readonly IServiceManager serviceManager;
+        public ReportsController(IServiceManager serviceManager)
         {
-            _context = context;
+            this.serviceManager = serviceManager;
         }
-
+        /*
         // GET: api/reports/genres/popular5
         [HttpGet("genres/popular{nr:int}")]
         [SwaggerOperation(Summary = "Get top genres by movie count", Description = "Returns the most frequently used genres in movies.", Tags = ["Reports on Genres"])]
@@ -142,7 +140,7 @@ namespace Movies.Presentation.Controllers
 
             return Ok(recentDirectors);
 
-        }
+        } */
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using Service.Contracts;
+﻿using Movies.Contracts;
 
 namespace Movies.Services;
 

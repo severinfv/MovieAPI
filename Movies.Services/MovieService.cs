@@ -1,12 +1,12 @@
-﻿using Service.Contracts;
-using Domain.Contracts.Repositories;
-using Domain.Models.Entities;
-using Domain.Models.Exceptions;
-using Movies.Shared.DTOs;
-using Movies.Shared.DTOs.ActorDTOs;
-using Movies.Shared.DTOs.MovieDTOs;
-using Movies.Shared.DTOs.ReviewDTOs;
-using Movies.Shared.Parameters;
+﻿using Movies.Core.DTOs;
+using Movies.Core.DTOs.ActorDTOs;
+using Movies.Core.DTOs.MovieDTOs;
+using Movies.Core.DTOs.ReviewDTOs;
+using Movies.Core.Entities;
+using Movies.Core.Exceptions;
+using Movies.Core.Parameters;
+using Movies.Core.Repositories;
+using Movies.Contracts;
 
 
 namespace Movies.Services
@@ -83,7 +83,7 @@ namespace Movies.Services
                 Title = dto.Title,
                 Year = dto.Year,
                 Runtime = dto.Runtime,
-                IMDB = dto.IMDBRating,
+                IMDB = dto.IMDB,
             };
             movie.DirectorId = dto.DirectorId;
 
@@ -109,7 +109,7 @@ namespace Movies.Services
             movie.Title = dto.Title;
             movie.Year = dto.Year;
             movie.Runtime = dto.Runtime;
-            movie.IMDB = dto.IMDBRating;
+            movie.IMDB = dto.IMDB;
 
             uow.MovieRepository.Update(movie);
             await uow.CompleteAsync();
@@ -137,11 +137,11 @@ namespace Movies.Services
             if (dto.Runtime == 0)
                 errors.Add("Runtime, ");
 
-            if (dto.IMDBRating == 0)
+            if (dto.IMDB == 0)
                 errors.Add("IMDB rating, ");
 
             //if (dto.DirectorId is null)
-               // errors.Add("DirectorId.");
+            // errors.Add("DirectorId.");
 
             if (errors.Any())
                 throw new DtoBadRequestException(string.Join(" ", errors));

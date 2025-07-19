@@ -1,5 +1,5 @@
-﻿using Movies.Shared.DTOs.ActorDTOs;
-using Movies.Shared.Parameters;
+﻿using Movies.Core.DTOs.ActorDTOs;
+using Movies.Core.Parameters;
 
 namespace Service.Contracts
 {

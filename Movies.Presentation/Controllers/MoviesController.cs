@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Movies.Shared.DTOs;
-using Movies.Shared.DTOs.MovieDTOs;
-using Movies.Shared.Parameters;
-using Service.Contracts;
+using Movies.Core.DTOs;
+using Movies.Core.DTOs.ActorDTOs;
+using Movies.Core.DTOs.MovieDTOs;
+using Movies.Core.Parameters;
+using Movies.Contracts;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Text.Json;
 
@@ -38,26 +39,35 @@ namespace Movies.Presentation.Controllers
         }
 
 
-        // GET: api/Movies/5
+        // GET: api/movies/5
         [HttpGet("{id:int}")]
         [SwaggerOperation(Summary = "Gets movie by id", Description = "Gets a short info of a movie by Id.")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<MovieDto>> GetMovie(Guid id) =>
-             Ok((MovieDto?) await serviceManager.MovieService.GetMovieAsync(id));
-        
+             Ok((MovieDto?)await serviceManager.MovieService.GetMovieAsync(id));
 
-        // GET: api/Movies/5/details
+
+        // GET: api/movies/5/details
         [HttpGet("{id}/details")]
         [SwaggerOperation(Summary = "Gets movie with details by id", Description = "Gets a detailed info of a movie by Id.")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<MovieDetailsDto>> GetMovieWithDetails(Guid id, bool includeGenres, bool includeActors, bool includeReviews)
-            => Ok((MovieDetailsDto?) await serviceManager.MovieService.GetMovieWithDetailsAsync(id, includeGenres, includeActors, includeReviews));
+            => Ok((MovieDetailsDto?)await serviceManager.MovieService.GetMovieWithDetailsAsync(id, includeGenres, includeActors, includeReviews));
 
-        
-        
+
+        // GET: api/movies/5/actors
+        [HttpGet("{movieId:Guid}/actors")]
+        [SwaggerOperation(Summary = "Get movie actors", Description = "Gets all actors by their MovieId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ActorDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ActorDto>>> GetActorsFromMovieAsync(Guid movieId, bool trackChanges)
+              => Ok((IEnumerable<ActorDto>)await serviceManager.ActorService.GetActorsFromMovieAsync(movieId, trackChanges));
+
+
+
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update Movie", Description = "Updates an existing movie by ID.")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -70,7 +80,7 @@ namespace Movies.Presentation.Controllers
 
             return NoContent();
         }
-        
+
         // POST: api/Movies
         [HttpPost]
         [SwaggerOperation(Summary = "Create a movie.", Description = "Creates a new movie.")]
@@ -80,7 +90,7 @@ namespace Movies.Presentation.Controllers
         {
             var movieDto = await serviceManager.MovieService.AddMovieAsync(dto);
 
-            return CreatedAtAction(nameof(GetMovie), new { id = movieDto.Id }, movieDto);  
+            return CreatedAtAction(nameof(GetMovie), new { id = movieDto.Id }, movieDto);
         }
 
         // DELETE: api/Movies/5
@@ -93,7 +103,7 @@ namespace Movies.Presentation.Controllers
             await serviceManager.MovieService.DeleteMovieAsync(id);
 
             return NoContent();
-        } 
-  
+        }
+
     }
 }

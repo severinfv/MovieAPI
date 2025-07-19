@@ -1,4 +1,4 @@
-﻿namespace Movies.Shared.DTOs.Reports
+﻿namespace Movies.Shared.DTOs.ReportsDTOs
 {
     public class GenreAvgScore
     {

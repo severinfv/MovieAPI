@@ -1,10 +1,7 @@
-﻿using Domain.Contracts.Repositories;
-using Domain.Models.Entities;
-using Domain.Models.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using Movies.Shared.DTOs.ReviewDTOs;
-using Service.Contracts;
-using System.Linq;
+﻿using Movies.Core.DTOs.ReviewDTOs;
+using Movies.Core.Exceptions;
+using Movies.Core.Repositories;
+using Movies.Contracts;
 
 namespace Movies.Services;
 

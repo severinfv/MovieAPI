@@ -1,4 +1,4 @@
-﻿using Movies.Shared.DTOs.ReviewDTOs;
+﻿using Movies.Core.DTOs.ReviewDTOs;
 
 namespace Service.Contracts
 {

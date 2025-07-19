@@ -1,6 +1,6 @@
-﻿using Movies.Shared.DTOs;
-using Movies.Shared.DTOs.MovieDTOs;
-using Movies.Shared.Parameters;
+﻿using Movies.Core.DTOs;
+using Movies.Core.DTOs.MovieDTOs;
+using Movies.Core.Parameters;
 
 namespace Service.Contracts
 {

@@ -1,12 +1,9 @@
-﻿using Domain.Contracts.Repositories;
-using Domain.Models.Entities;
-using Domain.Models.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using Movies.Shared.DTOs.ActorDTOs;
-using Movies.Shared.DTOs.MovieDTOs;
-using Movies.Shared.Parameters;
-using Service.Contracts;
-using System.Linq;
+﻿using Movies.Core.DTOs.ActorDTOs;
+using Movies.Core.DTOs.MovieDTOs;
+using Movies.Core.Exceptions;
+using Movies.Core.Parameters;
+using Movies.Core.Repositories;
+using Movies.Contracts;
 
 namespace Movies.Services;
 
@@ -23,10 +20,11 @@ public class ActorService : IActorService
     {
         var actor = await uow.ActorRepository.GetByIdAsync(id, trackChanges) ?? throw new ActorNotFoundException(id);
 
-        var dto = new ActorDto {
+        var dto = new ActorDto
+        {
             Name = actor.Name,
             Appeared = includeFilms
-                    ? actor.Movies.Select(g => new MovieDto { Title = g.Title, Year = g.Year.Year})
+                    ? actor.Movies.Select(g => new MovieDto { Title = g.Title, Year = g.Year.Year })
                     : Enumerable.Empty<MovieDto>(),
         };
         return dto;
@@ -35,7 +33,7 @@ public class ActorService : IActorService
     public async Task<IEnumerable<ActorDto>> GetActorsAsync(ActorParameters parameters, bool trackChanges = false)
     {
         var actors = await uow.ActorRepository.GetAllAsync(parameters, trackChanges);
-        
+
         var dtos = actors.Select(a => new ActorDto { Name = a.Name });
         return dtos;
     }
@@ -46,7 +44,7 @@ public class ActorService : IActorService
             new MovieNotFoundException(movieId);
 
         var actors = await uow.ActorRepository.GetActorsByMovieIdAsync(movieId, trackChanges);
-        
+
         var dtos = actors.Select(a => new ActorDto { Name = a.Name });
 
         return dtos;

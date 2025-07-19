@@ -1,6 +1,6 @@
 ﻿using Movies.Shared.DTOs.MovieDTOs;
 
-namespace Movies.Shared.DTOs.Reports
+namespace Movies.Shared.DTOs.ReportsDTOs
 {
     public class CollaborationsDto
     {
